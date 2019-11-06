@@ -1,0 +1,93 @@
+<nz-card [nzCover]="coverTemplate" style="width: 250px;" [nzActions]="[actionSetting, actionEdit, actionEllipsis]">
+  <nz-card-meta nzTitle="Card title" nzDescription="This is the description"></nz-card-meta>
+</nz-card>
+<ng-template #avatarTemplate>
+  <nz-avatar nzSrc="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"></nz-avatar>
+</ng-template>
+<ng-template #coverTemplate>
+  <img alt="example" src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png" />
+</ng-template>
+<ng-template #actionSetting >
+  <i nz-icon nzType="delete" nz-popconfirm nzPopconfirmTitle="Are you sure?"></i>
+    <ng-template #iconTpl>
+      <i nz-icon nzType="question-circle-o" style="color: red;"></i>
+    </ng-template>
+</ng-template>
+<ng-template #actionEdit >
+  <i nz-icon nzType="edit" (click)="showModal()"></i>
+</ng-template>
+<ng-template #actionEllipsis>
+  <i nz-icon nzType="ellipsis"></i>
+</ng-template>
+
+<!-- modal -->
+<nz-modal [(nzVisible)]="isVisible" nzTitle="Edit your pet" [nzFooter]="null" (nzOnCancel)="handleCancel()">
+
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
+      <!-- name -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Pet's Name</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+          <input nz-input formControlName="petName" placeholder="async validate try to write JasonWood" />
+          <ng-template #userErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Please input your pet's name!
+            </ng-container>
+            <ng-container *ngIf="control.hasError('duplicated')">
+              The username is redundant!
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- gender -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Gender</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+  
+          <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Choose" formControlName="gender">
+            <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
+            <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
+            <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
+          </nz-select>
+  
+          <ng-template #userErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Please input your pet's gender!
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- age -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Age</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+          <input nz-input formControlName="age" placeholder="async validate try to write JasonWood" />
+          <ng-template #userErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Please input your pet's age!
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+      <!-- vaccine -->
+      <nz-form-item>
+        <nz-form-label [nzSpan]="7" nzRequired>Vaccine status</nz-form-label>
+        <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+          <input nz-input formControlName="Vacccine" placeholder="async validate try to write JasonWood" />
+          <ng-template #userErrorTpl let-control>
+            <ng-container *ngIf="control.hasError('required')">
+              Please input your pet's vaccine status!
+            </ng-container>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+  
+  
+      <nz-form-item>
+        <nz-form-control [nzOffset]="7" [nzSpan]="12">
+          <button nz-button nzType="primary" [disabled]="!validateForm.valid" style="float: right">Save</button>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  
+  </nz-modal>
