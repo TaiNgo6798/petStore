@@ -7,8 +7,6 @@ apiRouterAccount
 .route("/accounts")
   .get((req, res) => {
     Account.find((err, accounts) => {
-      console.log(req.decoded);
-      
       return res.json(accounts);
     });
   });

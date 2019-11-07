@@ -115,7 +115,7 @@ apiRouterLogin.post("/logout", function(req, res) {
   }
 });
 
-apiRouterLogin.use(function(req, res, next) {
+apiRouterLogin.use("/petshop",function(req, res, next) {
   // check header or url parameters or post parameters for token
   var token =
     req.body.token || req.query.token || req.headers["x-access-token"];

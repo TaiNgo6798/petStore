@@ -45,10 +45,10 @@ app.get("/", (req, res) => {
 
 var loginRouterApi = require('./app/RouterAPI/loginRouterApi');
 var accountRouterApi = require('./app/RouterAPI/accountRouterApi');
-var userRouterApi = require('./app/RouterAPI/useRouterApi');
 var petRouterApi = require('./app/RouterAPI/petRouterApi');
+var staffRouterApi = require('./app/RouterAPI/staffRouterApi');
 
 app.use("/api", loginRouterApi);
-app.use("/api", accountRouterApi);
-app.use("/api", userRouterApi);
-app.use("/api", petRouterApi);
+app.use("/api/petshop", accountRouterApi);
+app.use("/api/petshop", petRouterApi);
+app.use("/api/petshop", staffRouterApi);
