@@ -5,6 +5,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification'
 import { AuthService } from "angularx-social-login";
 import { FacebookLoginProvider, GoogleLoginProvider } from "angularx-social-login";
 import { SocialUser } from "angularx-social-login";
+import axios from 'axios'
 
 @Component({
   selector: 'app-login',
@@ -92,6 +93,26 @@ export class LoginComponent implements OnInit {
     imgLeft.add('move-img-to-left-register')
   }
 
+  checkAccountApi(): Boolean {
+    axios({
+      method: 'POST',
+      url: "http://localhost:8080/api/login",
+      data: {
+        username: "taingo",
+        password: "123456",
+        token: 'aavbnvbnvbn'
+      },
+    })
+      .then(function (response) {
+        console.log(response);
+        return true
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+    return false
+  }
+
   submitForm(): void {
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty()
@@ -101,22 +122,22 @@ export class LoginComponent implements OnInit {
     this.notification.config({
       nzPlacement: 'bottomRight'
     })
-
-    if (this.username === 'admin' && this.password === 'admin') {
-      this.router.navigateByUrl('/dashboard')
-      this.notification.create(
-        'success',
-        'Đăng nhập thành công !',
-        ""
-      )
-    }
-    else {
-      this.notification.create(
-        'error',
-        'Sai tài khoản hoặc mật khẩu !',
-        ""
-      )
-    }
+    this.checkAccountApi()
+    // if (this.username === 'admin' && this.password === 'admin') {
+    //   this.router.navigateByUrl('/dashboard')
+    //   this.notification.create(
+    //     'success',
+    //     'Đăng nhập thành công !',
+    //     ""
+    //   )
+    // }
+    // else {
+    //   this.notification.create(
+    //     'error',
+    //     'Sai tài khoản hoặc mật khẩu !',
+    //     ""
+    //   )
+    // }
   }
 
   ngOnInit(): void {
