@@ -49,6 +49,6 @@ var petRouterApi = require('./app/RouterAPI/petRouterApi');
 var staffRouterApi = require('./app/RouterAPI/staffRouterApi');
 
 app.use("/api", loginRouterApi);
-app.use("/api", accountRouterApi);
-app.use("/api", petRouterApi);
-app.use("/api", staffRouterApi);
+app.use("/api/petshop", accountRouterApi);
+app.use("/api/petshop", petRouterApi);
+app.use("/api/petshop", staffRouterApi);
