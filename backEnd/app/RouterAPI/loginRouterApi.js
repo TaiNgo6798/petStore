@@ -58,7 +58,7 @@ apiRouterLogin.post("/login", function(req, res) {
             message: "Tài khoản không tồn tại."
           });
         }
-      } else if (account) {
+      } else if (account) { 
         // check if password matches
         var validPassword = account.comparePassword(req.body.password);
         if (!validPassword) {

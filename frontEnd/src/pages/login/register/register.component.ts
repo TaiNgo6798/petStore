@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from "@angular/router"
 import { NzNotificationService } from 'ng-zorro-antd/notification'
+import axios from 'axios'
 
 @Component({
   selector: 'app-register',
@@ -12,15 +13,27 @@ export class RegisterComponent implements OnInit {
 
   @Output()
   registered = new EventEmitter<string>();
-  
+
 
   validateForm: FormGroup;
   constructor(
     private fb: FormBuilder,
     private router: Router,
     private notification: NzNotificationService,
-    ) {}
-  
+  ) { }
+
+
+  imgClick(): void {
+    const registerForm = window.document.querySelector('.register-box').classList
+    const loginForm = window.document.querySelector('.login-box').classList
+    const imgLeft = window.document.querySelector('.img-left').classList
+
+    registerForm.remove('show-large')
+    loginForm.toggle('show')
+    imgLeft.toggle('move-img-to-left')
+    imgLeft.remove('move-img-to-left-register')
+  }
+
   submitForm(): void {
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty();
@@ -31,16 +44,42 @@ export class RegisterComponent implements OnInit {
       nzPlacement: 'bottomRight'
     })
 
-    if(this.validateForm.status === 'VALID')
-    {
-      this.registered.emit('complete')
-      this.notification.create(
-        'success',
-        'Đăng kí tài khoản thành công !',
-        ""
-      )
+    if (this.validateForm.status === 'VALID') {
+
+      const { name, username, email, password } = this.validateForm.value
+
+      axios({
+        method: 'POST',
+        url: "http://localhost:8080/api/register",
+        data: {
+          name: name,
+          email: email,
+          username: username,
+          password: password
+        },
+      })
+        .then((response: any) => {
+          if (response.data.success === true) {
+            this.imgClick()
+            this.notification.create(
+              'success',
+              'Đăng kí thành công !',
+              ""
+            )
+          }
+          else {
+            this.notification.create(
+              'error',
+              response.data.message,
+              ""
+            )
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
     }
-    
+
   }
 
   updateConfirmValidator(): void {
@@ -64,10 +103,10 @@ export class RegisterComponent implements OnInit {
       email: [null, [Validators.email, Validators.required]],
       password: [null, [Validators.required]],
       checkPassword: [null, [Validators.required, this.confirmationValidator]],
-      phoneNumberPrefix: ['+86'],
-      phoneNumber: [null, [Validators.required]],
+      name: [null, [Validators.required]],
+      username: [null, [Validators.required]],
     });
-    
+
   }
 
 

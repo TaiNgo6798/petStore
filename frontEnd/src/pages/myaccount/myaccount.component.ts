@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router"
 import { AuthService } from "angularx-social-login";
-
+import { NzNotificationService } from 'ng-zorro-antd/notification'
+import axios from 'axios'
 
 @Component({
   selector: 'app-myaccount',
@@ -13,9 +14,11 @@ export class MyaccountComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
+    private notification: NzNotificationService,
   ) { }
 
   logoutClick(): void{
+    localStorage.clear()
     this.authService.signOut()
     this.router.navigateByUrl('/login')
   }
@@ -42,6 +45,26 @@ export class MyaccountComponent implements OnInit {
   }
 
   ngOnInit() {
+    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    var token = currentUser ? currentUser.token : 'randomshittoken'; // your token
+    axios({
+      method: 'GET',
+      url: `http://localhost:8080/api/petshop/pets?token=${token}`,
+    })
+      .then((response:any) =>  {
+        if(response.data.success === false)
+        {
+          this.notification.config({
+            nzPlacement: 'bottomRight'
+          })
+          this.router.navigateByUrl('/login')
+          this.notification.create(
+            'error',
+            'Bạn chưa đăng nhập !',
+            ""
+          )
+        }
+      })
   }
 
 }

@@ -15,6 +15,7 @@ import axios from 'axios'
 export class LoginComponent implements OnInit {
   username: any
   password: any
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -22,6 +23,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
 
   ) { }
+
+  
 
   validateForm: FormGroup
 
@@ -93,24 +96,8 @@ export class LoginComponent implements OnInit {
     imgLeft.add('move-img-to-left-register')
   }
 
-  checkAccountApi(): Boolean {
-    axios({
-      method: 'POST',
-      url: "http://localhost:8080/api/login",
-      data: {
-        username: "taingo",
-        password: "123456",
-        token: 'aavbnvbnvbn'
-      },
-    })
-      .then(function (response) {
-        console.log(response);
-        return true
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    return false
+  gotoDashboard(): void {
+    
   }
 
   submitForm(): void {
@@ -122,22 +109,43 @@ export class LoginComponent implements OnInit {
     this.notification.config({
       nzPlacement: 'bottomRight'
     })
-    this.checkAccountApi()
-    // if (this.username === 'admin' && this.password === 'admin') {
-    //   this.router.navigateByUrl('/dashboard')
-    //   this.notification.create(
-    //     'success',
-    //     'Đăng nhập thành công !',
-    //     ""
-    //   )
-    // }
-    // else {
-    //   this.notification.create(
-    //     'error',
-    //     'Sai tài khoản hoặc mật khẩu !',
-    //     ""
-    //   )
-    // }
+
+    if (this.validateForm.status === 'VALID')
+    {
+      axios({
+        method: 'POST',
+        url: "http://localhost:8080/api/login",
+        data: {
+          username: this.username,
+          password: this.password,
+        },
+      })
+        .then((response:any) =>  {
+          if (response.data.success === true) {
+            localStorage.setItem('currentUser', JSON.stringify({ token: response.data.token }))
+            this.router.navigateByUrl('/dashboard')
+            this.notification.create(
+              'success',
+              'Đăng nhập thành công !',
+              ""
+            )
+          }
+          else {
+            this.notification.create(
+              'error',
+              'Sai tài khoản hoặc mật khẩu !',
+              ""
+            )
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  
+    }
+
+   
+    
   }
 
   ngOnInit(): void {
