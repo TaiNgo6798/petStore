@@ -111,8 +111,6 @@ apiRouterPet.route("/pets/search/:pet_name").get((req, res) => {
       if (err) {
         res.send(err);
       } else {
-        console.log(req.decoded);
-        
         res.json(pet);
       }
     }
