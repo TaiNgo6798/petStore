@@ -8,8 +8,11 @@ apiRouterLogin.post("/login", function(req, res) {
   // find the Account
 
   function createToken(account) {
+    console.log(account.id);
+    
     var token = jwt.sign(
       {
+        id:account.id,
         name: account.name,
         username: account.username,
         role: account.role

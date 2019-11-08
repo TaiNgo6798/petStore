@@ -9,6 +9,8 @@ var AccountSchema = new Schema({
   provider: String,
   image: String,
   email: String,
+  phone: String,
+  address: String,
   role: String,
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true, select: false }

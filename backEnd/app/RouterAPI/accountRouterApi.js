@@ -12,6 +12,12 @@ apiRouterAccount
   });
 
 apiRouterAccount
+.route("/current")
+  .get((req, res) => {
+      return res.json(req.decoded);
+  });
+
+apiRouterAccount
   .route("/accounts/:account_id")
   .get((req, res) => {
     Account.findById(req.params.account_id).exec((err, account) => {
@@ -32,6 +38,12 @@ apiRouterAccount
         }
         if (req.body.image) {
           account.image = req.body.image;
+        }
+        if (req.body.phone) {
+          account.phone = req.body.phone;
+        }
+        if (req.body.address) {
+          account.address = req.body.address;
         }
         if (req.body.password) {
           account.password = req.body.password;
