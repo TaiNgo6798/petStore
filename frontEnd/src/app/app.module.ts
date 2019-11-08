@@ -22,8 +22,8 @@ import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-logi
 import { LoginComponent } from 'src/pages/login/login.component';
 import { DasboardComponent } from 'src/pages/dasboard/dasboard.component';
 import { RegisterComponent } from 'src/pages/login/register/register.component';
-import { CardComponent } from 'src/pages/pets/card-list/card/card.component';
-import { CardListComponent } from 'src/pages/pets/card-list/card-list.component';
+import { CardComponent } from 'src/pages/pets/card/card.component';
+
 import { PetsComponent } from 'src/pages/pets/pets.component';
 import { MyaccountComponent } from 'src/pages/myaccount/myaccount.component';
 import { CustomersComponent } from 'src/pages/customers/customers.component';
@@ -55,7 +55,6 @@ export function provideConfig() {
     DasboardComponent,
     RegisterComponent,
     CardComponent,
-    CardListComponent,
     PetsComponent,
     MenuComponent,
     MyaccountComponent,
