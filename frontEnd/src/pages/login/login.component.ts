@@ -5,6 +5,7 @@ import { NzNotificationService } from 'ng-zorro-antd/notification'
 import { AuthService } from "angularx-social-login";
 import { FacebookLoginProvider, GoogleLoginProvider } from "angularx-social-login";
 import { SocialUser } from "angularx-social-login";
+import axios from 'axios'
 
 @Component({
   selector: 'app-login',
@@ -14,6 +15,7 @@ import { SocialUser } from "angularx-social-login";
 export class LoginComponent implements OnInit {
   username: any
   password: any
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -21,6 +23,8 @@ export class LoginComponent implements OnInit {
     private authService: AuthService,
 
   ) { }
+
+  
 
   validateForm: FormGroup
 
@@ -92,6 +96,10 @@ export class LoginComponent implements OnInit {
     imgLeft.add('move-img-to-left-register')
   }
 
+  gotoDashboard(): void {
+    
+  }
+
   submitForm(): void {
     for (const i in this.validateForm.controls) {
       this.validateForm.controls[i].markAsDirty()
@@ -102,21 +110,42 @@ export class LoginComponent implements OnInit {
       nzPlacement: 'bottomRight'
     })
 
-    if (this.username === 'admin' && this.password === 'admin') {
-      this.router.navigateByUrl('/dashboard')
-      this.notification.create(
-        'success',
-        'Đăng nhập thành công !',
-        ""
-      )
+    if (this.validateForm.status === 'VALID')
+    {
+      axios({
+        method: 'POST',
+        url: "http://localhost:8080/api/login",
+        data: {
+          username: this.username,
+          password: this.password,
+        },
+      })
+        .then((response:any) =>  {
+          if (response.data.success === true) {
+            localStorage.setItem('currentUser', JSON.stringify({ token: response.data.token }))
+            this.router.navigateByUrl('/dashboard')
+            this.notification.create(
+              'success',
+              'Đăng nhập thành công !',
+              ""
+            )
+          }
+          else {
+            this.notification.create(
+              'error',
+              'Sai tài khoản hoặc mật khẩu !',
+              ""
+            )
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+  
     }
-    else {
-      this.notification.create(
-        'error',
-        'Sai tài khoản hoặc mật khẩu !',
-        ""
-      )
-    }
+
+   
+    
   }
 
   ngOnInit(): void {
