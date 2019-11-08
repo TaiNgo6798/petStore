@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable, Observer } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+
 
 @Component({
   selector: 'app-card',
@@ -9,12 +10,16 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
   styleUrls: ['./card.component.less']
 })
 export class CardComponent implements OnInit {
+
+  @Input()
+  data: string;
+
   isVisible = false;
   validateForm: FormGroup;
   confirmModal: NzModalRef; // For testing by now
   constructor(
     private fb: FormBuilder,
-    private modal: NzModalService
+    private modal: NzModalService,
 
   ) {
     this.validateForm = this.fb.group({
@@ -25,7 +30,6 @@ export class CardComponent implements OnInit {
     });
    }
 
-   
 
   submitForm(value: any): void {
     for (const key in this.validateForm.controls) {
@@ -68,7 +72,7 @@ export class CardComponent implements OnInit {
   }
 
   handleOk(): void {
-    console.log('Button ok clicked!');
+    console.log('Button ok clicked!');  
     this.isVisible = false;
   }
 
