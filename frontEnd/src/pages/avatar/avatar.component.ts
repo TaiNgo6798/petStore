@@ -11,13 +11,9 @@ export class AvatarComponent {
   text: string = userList[3];
   color: string = colorList[3];
 
+  img = JSON.parse(localStorage.getItem('currentUser')).photoUrl
+
   change(): void {
-    let idx = userList.indexOf(this.text);
-    ++idx;
-    if (idx === userList.length) {
-      idx = 0;
-    }
-    this.text = userList[idx];
-    this.color = colorList[idx];
+    
   }
 }

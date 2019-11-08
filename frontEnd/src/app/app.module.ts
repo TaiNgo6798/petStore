@@ -1,5 +1,4 @@
 
-import { MenuComponent } from './../pages/menu/menu.component';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
@@ -56,7 +55,6 @@ export function provideConfig() {
     RegisterComponent,
     CardComponent,
     PetsComponent,
-    MenuComponent,
     MyaccountComponent,
     CustomersComponent,
     ListcustomersComponent,

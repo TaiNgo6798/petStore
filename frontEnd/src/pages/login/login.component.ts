@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
 
   ) { }
 
-  
+
 
   validateForm: FormGroup
 
@@ -36,15 +36,72 @@ export class LoginComponent implements OnInit {
       .then((res) => {
         console.log(res)
         if (this.loggedIn) {
+
           this.notification.config({
             nzPlacement: 'bottomRight'
           })
-          this.router.navigateByUrl('/dasboard')
-          this.notification.create(
-            'success',
-            'Đăng nhập thành công !',
-            ""
-          )
+
+          axios({
+            method: 'POST',
+            url: "http://localhost:8080/api/login",
+            data: {
+              provider: res.provider,
+              name: res.name,
+              email: res.email,
+              username: res.id,
+              password: res.authToken,
+              image: res.photoUrl
+            },
+          })
+            .then((response: any) => {
+              if (response.data.success === true) {
+                var token = response.data.token
+                axios({
+                  method: 'GET',
+                  url: `http://localhost:8080/api/petshop/current?token=${token}`
+
+                })
+                  .then((response: any) => {
+                    axios({
+                      method: 'GET',
+                      url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
+
+                    })
+                      .then((response: any) => {
+
+                        const { name, email, address, phone, image, _id } = response.data
+                        localStorage.setItem('currentUser', JSON.stringify({
+                          firstName: name.split(' ')[0],
+                          name,
+                          address,
+                          phone,
+                          photoUrl: image,
+                          email,
+                          _id
+                        }))
+                        localStorage.setItem('token', JSON.stringify(token))
+
+                        this.router.navigateByUrl('/dashboard')
+                        this.notification.create(
+                          'success',
+                          'Đăng nhập thành công !',
+                          ""
+                        )
+                      })
+                  })
+               
+              }
+              else {
+                this.notification.create(
+                  'error',
+                  'Sai tài khoản hoặc mật khẩu !',
+                  ""
+                )
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         }
       })
   }
@@ -52,23 +109,76 @@ export class LoginComponent implements OnInit {
   signInWithFB(): void {
     this.authService.signIn(FacebookLoginProvider.PROVIDER_ID)
       .then((res) => {
-        console.log(res)
         if (this.loggedIn) {
           this.notification.config({
             nzPlacement: 'bottomRight'
           })
-          this.router.navigateByUrl('/dasboard')
-          this.notification.create(
-            'success',
-            'Đăng nhập thành công !',
-            ""
-          )
-        }
-      })
-  }
 
-  signOut(): void {
-    this.authService.signOut();
+          axios({
+            method: 'POST',
+            url: "http://localhost:8080/api/login",
+            data: {
+              provider: res.provider,
+              name: res.name,
+              email: res.email,
+              username: res.id,
+              password: res.authToken,
+              image: res.photoUrl
+            },
+          })
+            .then((response: any) => {
+              if (response.data.success === true) {
+                var token = response.data.token
+                axios({
+                  method: 'GET',
+                  url: `http://localhost:8080/api/petshop/current?token=${token}`
+
+                })
+                  .then((response: any) => {
+                    axios({
+                      method: 'GET',
+                      url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
+
+                    })
+                      .then((response: any) => {
+
+                        const { name, email, address, phone, image, _id } = response.data
+                        localStorage.setItem('currentUser', JSON.stringify({
+                          firstName: name.split(' ')[0],
+                          name,
+                          address,
+                          phone,
+                          photoUrl: image,
+                          email,
+                          _id
+                        }))
+                        localStorage.setItem('token', JSON.stringify(token))
+
+                        this.router.navigateByUrl('/dashboard')
+                        this.notification.create(
+                          'success',
+                          'Đăng nhập thành công !',
+                          ""
+                        )
+                      })
+                  })
+               
+              }
+              else {
+                this.notification.create(
+                  'error',
+                  'Sai tài khoản hoặc mật khẩu !',
+                  ""
+                )
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+        }
+      }
+      )
   }
 
   imgClick(): void {
@@ -97,7 +207,7 @@ export class LoginComponent implements OnInit {
   }
 
   gotoDashboard(): void {
-    
+
   }
 
   submitForm(): void {
@@ -110,8 +220,7 @@ export class LoginComponent implements OnInit {
       nzPlacement: 'bottomRight'
     })
 
-    if (this.validateForm.status === 'VALID')
-    {
+    if (this.validateForm.status === 'VALID') {
       axios({
         method: 'POST',
         url: "http://localhost:8080/api/login",
@@ -120,15 +229,43 @@ export class LoginComponent implements OnInit {
           password: this.password,
         },
       })
-        .then((response:any) =>  {
+        .then((response: any) => {
           if (response.data.success === true) {
-            localStorage.setItem('currentUser', JSON.stringify({ token: response.data.token }))
-            this.router.navigateByUrl('/dashboard')
-            this.notification.create(
-              'success',
-              'Đăng nhập thành công !',
-              ""
-            )
+            var token = response.data.token
+                axios({
+                  method: 'GET',
+                  url: `http://localhost:8080/api/petshop/current?token=${token}`
+
+                })
+                  .then((response: any) => {
+                    axios({
+                      method: 'GET',
+                      url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
+
+                    })
+                      .then((response: any) => {
+
+                        const { name, email, address, phone, image, _id } = response.data
+                        localStorage.setItem('currentUser', JSON.stringify({
+                          firstName: name.split(' ')[0],
+                          name,
+                          address,
+                          phone,
+                          photoUrl: image,
+                          email,
+                          _id
+                        }))
+                        localStorage.setItem('token', JSON.stringify(token))
+
+                        this.router.navigateByUrl('/dashboard')
+                        this.notification.create(
+                          'success',
+                          'Đăng nhập thành công !',
+                          ""
+                        )
+                      })
+                  })
+               
           }
           else {
             this.notification.create(
@@ -141,11 +278,11 @@ export class LoginComponent implements OnInit {
         .catch(function (error) {
           console.log(error);
         });
-  
+
     }
 
-   
-    
+
+
   }
 
   ngOnInit(): void {

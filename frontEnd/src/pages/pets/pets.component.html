@@ -1,9 +1,9 @@
 <nz-layout class="left-layout">
   <nz-sider nzWidth="200px" nzTheme="light">
-    <div class="logo">
-      <nz-avatar [nzSize]="64" nzIcon="user"></nz-avatar>
-      <h3>Username</h3>
-    </div>
+      <div class="logo">
+          <nz-avatar [nzSize]="64" nzIcon="user" nzSrc={{currentUser.photoUrl}}></nz-avatar>
+        <h3>{{currentUser.name}}</h3>
+      </div>
    
     <ul nz-menu nzMode="inline" class="sider-menu" >
         <li nz-menu-item  (click)="dashboardPage()">

@@ -30,7 +30,8 @@ export class PetsComponent implements OnInit {
       Vacccine: ['', [Validators.required]]
     });
   }
-
+  
+  currentUser = JSON.parse(localStorage.getItem('currentUser'))
 
   submitForm(value: any): void {
     for (const key in this.validateForm.controls) {
@@ -108,8 +109,8 @@ export class PetsComponent implements OnInit {
 
   ngOnInit() {
 
-    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    var token = currentUser ? currentUser.token : 'randomshittoken'; // your token
+    var currentUser = JSON.parse(localStorage.getItem('token'));
+    var token = currentUser ? currentUser : 'randomshittoken'; // your token
     axios({
       method: 'GET',
       url: `http://localhost:8080/api/petshop/pets?token=${token}`,

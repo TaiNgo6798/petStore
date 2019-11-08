@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router"
 import { AuthService } from "angularx-social-login";
 import { NzNotificationService } from 'ng-zorro-antd/notification'
+import { Observable, Observer } from 'rxjs';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+
 import axios from 'axios'
 
 @Component({
@@ -10,50 +14,168 @@ import axios from 'axios'
   styleUrls: ['./myaccount.component.less']
 })
 export class MyaccountComponent implements OnInit {
-
+  isVisible = false
+  validateForm: FormGroup;
+  confirmModal: NzModalRef; // For testing by now
   constructor(
     private router: Router,
     private authService: AuthService,
     private notification: NzNotificationService,
-  ) { }
+    private fb: FormBuilder,
+  ) {
+    this.validateForm = this.fb.group({
+      name: [''],
+      phone: [''],
+      address: [''],
+      image: [''],
+      password: [null],
+      checkPassword: [null, [ this.confirmationValidator]],
+    });
+  }
 
-  logoutClick(): void{
+  currentUser = JSON.parse(localStorage.getItem('currentUser'))
+
+  detailCurrentUser = {
+    firstName: '',
+    name: '',
+    address: '',
+    phone: '',
+    image: '',
+    email: '',
+    _id: ''
+  }
+
+  submitForm(value: any): void {
+    this.handleOk(value)
+  }
+
+  confirmationValidator = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { required: true };
+    } else if (control.value !== this.validateForm.controls.password.value) {
+      return { confirm: true, error: true };
+    }
+    return {};
+  };
+
+  asyncValidator = (control: FormControl) =>
+    new Observable((observer: Observer<ValidationErrors | null>) => {
+      setTimeout(() => {
+        if (control.value === 'JasonWood') {
+          // you have to return `{error: true}` to mark it as an error event
+          observer.next({ error: true, duplicated: true });
+        } else {
+          observer.next(null);
+        }
+        observer.complete();
+      }, 1000);
+    });
+
+  confirmValidator = (control: FormControl): { [s: string]: boolean } => {
+    if (!control.value) {
+      return { error: true, required: true };
+    } else if (control.value !== this.validateForm.controls.password.value) {
+      return { confirm: true, error: true };
+    }
+    return {};
+  };
+
+  showModal(): void {
+    this.isVisible = true;
+  }
+
+  handleOk(value): void {
+    var currentUser = JSON.parse(localStorage.getItem('token'));
+    var token = currentUser ? currentUser : 'randomshittoken';
+    const { name, image, phone, address, password } = value
+    axios({
+      method: 'PUT',
+      url: `http://localhost:8080/api/petshop/accounts/${this.detailCurrentUser._id}?token=${token}`,
+      data: {
+        name,
+        image,
+        phone,
+        address,
+        password,
+      }
+
+    })
+      .then((response: any) => {
+        axios({
+          method: 'GET',
+          url: `http://localhost:8080/api/petshop/accounts/${this.detailCurrentUser._id}?token=${token}`
+
+        })
+          .then((response: any) => {
+            const { name, email, address, phone, image, _id } = response.data
+            this.detailCurrentUser = {
+              firstName: name.split(' ')[0],
+              name,
+              address,
+              phone,
+              image,
+              email,
+              _id
+            }
+            var newUserUpdate = {
+              firstName: name.split(' ')[0],
+              name,
+              address,
+              phone,
+              photoUrl: image,
+              email,
+              _id
+            }
+            localStorage.setItem('currentUser', JSON.stringify(newUserUpdate));
+          })
+      }).catch((err) => {
+        console.log(err)
+      })
+
+    this.isVisible = false;
+  }
+
+  handleCancel(): void {
+
+    this.isVisible = false;
+  }
+
+  logoutClick(): void {
     localStorage.clear()
     this.authService.signOut()
     this.router.navigateByUrl('/login')
   }
 
-  petsPage(): void{
+  petsPage(): void {
     this.router.navigateByUrl('/pets')
 
   }
 
-  menuClick(e): void{
+  menuClick(e): void {
     console.log(e)
   }
 
-  dashboardPage(): void{
+  dashboardPage(): void {
     this.router.navigateByUrl('/dashboard')
   }
 
-  customersPage(): void{
+  customersPage(): void {
     this.router.navigateByUrl('/customers')
   }
 
-  myaccountPage(): void{
+  myaccountPage(): void {
     this.router.navigateByUrl('/myaccount')
   }
 
   ngOnInit() {
-    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    var token = currentUser ? currentUser.token : 'randomshittoken'; // your token
+    var currentUser = JSON.parse(localStorage.getItem('token'));
+    var token = currentUser ? currentUser : 'randomshittoken'; // your token
     axios({
       method: 'GET',
       url: `http://localhost:8080/api/petshop/pets?token=${token}`,
     })
-      .then((response:any) =>  {
-        if(response.data.success === false)
-        {
+      .then((response: any) => {
+        if (response.data.success === false) {
           this.notification.config({
             nzPlacement: 'bottomRight'
           })
@@ -63,6 +185,35 @@ export class MyaccountComponent implements OnInit {
             'Bạn chưa đăng nhập !',
             ""
           )
+        }
+        else {
+          axios({
+            method: 'GET',
+            url: `http://localhost:8080/api/petshop/current?token=${token}`
+
+          })
+            .then((response: any) => {
+              axios({
+                method: 'GET',
+                url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
+
+              })
+                .then((response: any) => {
+
+                  const { name, email, address, phone, image, _id } = response.data
+                  this.detailCurrentUser = {
+                    firstName: name.split(' ')[0],
+                    name,
+                    address,
+                    phone,
+                    image,
+                    email,
+                    _id
+                  }
+
+                  
+                })
+            })
         }
       })
   }

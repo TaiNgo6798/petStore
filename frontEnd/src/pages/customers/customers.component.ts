@@ -17,6 +17,8 @@ export class CustomersComponent implements OnInit {
     private notification: NzNotificationService,
   ) { }
 
+  currentUser = JSON.parse(localStorage.getItem('currentUser'))
+
   logoutClick(): void{
     localStorage.clear()
     this.authService.signOut()
@@ -46,8 +48,8 @@ export class CustomersComponent implements OnInit {
 
 
   ngOnInit() {
-    var currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    var token = currentUser ? currentUser.token : 'randomshittoken'; // your token
+    var currentUser = JSON.parse(localStorage.getItem('token'));
+    var token = currentUser ? currentUser : 'randomshittoken'; // your token
     axios({
       method: 'GET',
       url: `http://localhost:8080/api/petshop/pets?token=${token}`,
