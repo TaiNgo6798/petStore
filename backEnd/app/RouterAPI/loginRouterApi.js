@@ -49,26 +49,27 @@ apiRouterLogin.post("/login", function(req, res) {
           account.save(err => {
             if (err) {
               res.send(err);
+            }else{
+              createToken(account);
             }
-            createToken(account);
           });
-        } else {
+        } else {  
           res.json({
             success: false,
             message: "Tài khoản không tồn tại."
           });
         }
-      } else if (account) {
+      } else {
         // check if password matches
         var validPassword = account.comparePassword(req.body.password);
-        if (!validPassword) {
+        if (validPassword || account.provider === req.body.provider) {
+          // if User is found and password is right // create a token
+          createToken(account);
+        } else {  
           res.json({
             success: false,
             message: "Authentication tailed. Wrong password."
           });
-        } else {
-          // if User is found and password is right // create a token
-          createToken(account);
         }
       }
     });

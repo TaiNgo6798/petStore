@@ -19,7 +19,7 @@ AccountSchema.pre("save", function(next) {
   var account = this;
   // hash the password only ỉf the password has been changed or Account is new
   if (!account.isModified("password")) return next();
-  // generate the hash
+  // generate the hash    
   bcrypt.hash(account.password, null, null, function(err, hash) {
     if (err) return next(err);
     // change the password to the hashed version
