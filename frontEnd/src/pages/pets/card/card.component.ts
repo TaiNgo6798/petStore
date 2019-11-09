@@ -12,24 +12,42 @@ import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
 export class CardComponent implements OnInit {
 
   @Input()
-  data: string;
+  data: {
+    name: String,
+    kind:String,
+    character:String, 
+    gender: Boolean,
+    vaccineUpToDate: Boolean,
+    provider: String,
+    age:Number,
+    price:Number,
+    img: String,
+  };
 
   isVisible = false;
+  detailVisible = false;
+
+
   validateForm: FormGroup;
   confirmModal: NzModalRef; // For testing by now
   constructor(
     private fb: FormBuilder,
-    private modal: NzModalService,
-
   ) {
     this.validateForm = this.fb.group({
-      petName: ['', [Validators.required], [this.userNameAsyncValidator]],
-      gender: ['', [Validators.required]],
-      age: ['', [Validators.required]],
-      Vacccine: ['', [Validators.required]]
+      name: [''],
+      gender: [''],
+      age: [''],
+      vaccine: [''],
+      price: [''],
+      character:  [''],
+      image:  [''],
+      provider:  ['']
     });
    }
 
+  detailClick(): void{
+    this.detailVisible=true
+  }
 
   submitForm(value: any): void {
     for (const key in this.validateForm.controls) {
@@ -79,6 +97,7 @@ export class CardComponent implements OnInit {
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isVisible = false;
+    this.detailVisible=false
   }
 
   ngOnInit() {
