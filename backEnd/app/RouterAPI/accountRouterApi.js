@@ -42,6 +42,14 @@ apiRouterAccount
         if (req.body.phone) {
           account.phone = req.body.phone;
         }
+        if (req.body.role) {
+          account.role = req.body.role;
+        }
+        if(req.decoded.role === 'admin'){
+          if (req.body.lock) {
+            account.lock = req.body.lock;
+          }
+        }
         if (req.body.address) {
           account.address = req.body.address;
         }

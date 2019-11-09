@@ -9,10 +9,10 @@ apiRouterLogin.post("/login", function(req, res) {
 
   function createToken(account) {
     console.log(account.id);
-    
+
     var token = jwt.sign(
       {
-        id:account.id,
+        id: account.id,
         name: account.name,
         username: account.username,
         role: account.role
@@ -32,7 +32,7 @@ apiRouterLogin.post("/login", function(req, res) {
   Account.findOne({
     username: req.body.username
   })
-    .select("name provider role username password")
+    .select("name provider role username password lock")
     .exec(function(err, account) {
       if (err) throw err;
       // no Account with that username was found
@@ -52,27 +52,34 @@ apiRouterLogin.post("/login", function(req, res) {
           account.save(err => {
             if (err) {
               res.send(err);
-            }else{
+            } else {
               createToken(account);
             }
           });
-        } else {  
+        } else {
           res.json({
             success: false,
             message: "Tài khoản không tồn tại."
           });
         }
       } else {
-        // check if password matches
-        var validPassword = account.comparePassword(req.body.password);
-        if (validPassword || account.provider === req.body.provider) {
-          // if User is found and password is right // create a token
-          createToken(account);
-        } else {  
-          res.json({
-            success: false,
-            message: "Authentication tailed. Wrong password."
-          });
+        if (account.lock) {
+          // check if password matches
+          var validPassword = account.comparePassword(req.body.password);
+          if (validPassword || account.provider === req.body.provider) {
+            // if User is found and password is right // create a token
+            createToken(account);
+          } else {
+            res.json({
+              success: false,
+              message: "Authentication tailed. Wrong password."
+            });
+          }
+        }else{
+          res.send({
+            success:false,
+            message:"Account Locked"
+          })
         }
       }
     });
@@ -109,7 +116,6 @@ apiRouterLogin.post("/logout", function(req, res) {
   var token =
     req.body.token || req.query.token || req.headers["x-access-token"];
   if (token) {
-      
   } else {
     // ỉf there ỉs no token
     // return an HTTP response of 403 (access torbidden) and an error message
@@ -119,7 +125,7 @@ apiRouterLogin.post("/logout", function(req, res) {
   }
 });
 
-apiRouterLogin.use("/petshop",function(req, res, next) {
+apiRouterLogin.use("/petshop", function(req, res, next) {
   // check header or url parameters or post parameters for token
   var token =
     req.body.token || req.query.token || req.headers["x-access-token"];

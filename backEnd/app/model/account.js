@@ -2,8 +2,15 @@ var mongoose = require("mongoose");
 var Schema = mongoose.Schema;
 var bcrypt = require("bcrypt-nodejs");
 
-// Account schema
+// full role
+// role = {
+//   pet:['see','add','remove','edit'],
+//   account:['see','add','remove','edit'],
+//   staff:['see','add','remove','edit']
+// }
 
+
+// Account schema
 var AccountSchema = new Schema({
   name: String,
   provider: String,
@@ -11,7 +18,10 @@ var AccountSchema = new Schema({
   email: String,
   phone: String,
   address: String,
-  role: String,
+  role: {type:Object,default:{
+    pet:['see']
+  }},
+  lock:{type:Boolean,default:true},
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true, select: false }
 });
