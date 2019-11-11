@@ -1,10 +1,12 @@
+import { CardComponent } from './card/card.component';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
 import { Router } from "@angular/router"
 import { AuthService } from "angularx-social-login";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable, Observer } from 'rxjs';
 import { NzNotificationService } from 'ng-zorro-antd/notification'
+
 import axios from 'axios'
 
 
@@ -14,6 +16,38 @@ import axios from 'axios'
   styleUrls: ['./pets.component.less']
 })
 export class PetsComponent implements OnInit {
+
+  @ViewChild('container', {
+    read: ViewContainerRef,
+    static: true
+  }) container: ViewContainerRef;
+
+  componentRef: ComponentRef<CardComponent>;
+
+
+  renderCard() {
+    const container = this.container;
+   // container.clear();
+    const injector = container.injector;
+    const cfr: ComponentFactoryResolver = injector.get(ComponentFactoryResolver);
+    const componentFactory = cfr.resolveComponentFactory(CardComponent);
+    // const componentRef = container.createComponent(componentFactory, container.length, injector);
+    const componentRef = container.createComponent(componentFactory, 0, injector);
+    componentRef.instance.data = {
+      name: 'pet1',
+      kind:'dog',
+      character:'funny', 
+      gender: true,
+      vaccineUpToDate: true,
+      provider: 'HCM',
+      age:2,
+      price:200,
+      img: 'https://images.theconversation.com/files/205966/original/file-20180212-58348-7huv6f.jpeg?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip',
+    };
+    // componentRef.changeDetectorRef.detectChanges();
+    this.componentRef = componentRef;
+  }
+
   isVisible = false;
   validateForm: FormGroup;
 
@@ -24,12 +58,16 @@ export class PetsComponent implements OnInit {
     private notification: NzNotificationService,
   ) {
     this.validateForm = this.fb.group({
-      petName: ['', [Validators.required], [this.userNameAsyncValidator]],
+      name: ['', [Validators.required]],
       gender: ['', [Validators.required]],
       age: ['', [Validators.required]],
-      Vacccine: ['', [Validators.required]]
+      vaccine: ['', [Validators.required]],
+      price: ['', [Validators.required]],
+      character:  ['', [Validators.required]],
+      image:  ['', [Validators.required]],
+      provider:  ['', [Validators.required]]
     });
-  }
+   }
   
   currentUser = JSON.parse(localStorage.getItem('currentUser'))
 
@@ -108,7 +146,7 @@ export class PetsComponent implements OnInit {
 
 
   ngOnInit() {
-
+    this.renderCard()
     var currentUser = JSON.parse(localStorage.getItem('token'));
     var token = currentUser ? currentUser : 'randomshittoken'; // your token
     axios({

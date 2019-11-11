@@ -36,77 +36,127 @@
       <div class="add-pet">
         <button nz-button nzType="primary" [nzSize]="size" (click)="showModal()"><i nz-icon nzType="plus"></i>Add more
           pet</button>
+<!-- modal -->
+          <nz-modal [(nzVisible)]="isVisible" nzTitle="Add your pet" [nzFooter]="null" (nzOnCancel)="handleCancel()">
 
-        <nz-modal [(nzVisible)]="isVisible" nzTitle="Add your pet" [nzFooter]="null" (nzOnCancel)="handleCancel()">
+              <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
+                <!-- name -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Pet's Name</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                    <input nz-input formControlName="name" placeholder="" />
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's name!
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <!-- Character -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Character</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                    <input nz-input formControlName="character" placeholder="" />
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's character!
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <!-- image -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Image link</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                    <input nz-input formControlName="image" placeholder="" />
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's image!
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <!-- gender -->
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="7" nzRequired>Gender</nz-form-label>
+                    <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                      <nz-select [(ngModel)]="selectedGender" nzAllowClear nzPlaceHolder="Choose" formControlName="gender">
+                        <nz-option nzValue="true" nzLabel="Male"></nz-option>
+                        <nz-option nzValue="false" nzLabel="Female"></nz-option>
+                      </nz-select>
+                      <ng-template #userErrorTpl let-control>
+                        <ng-container *ngIf="control.hasError('required')">
+                          Please input your pet's Gender !
+                        </ng-container>
+                      </ng-template>
+                    </nz-form-control>
+                  </nz-form-item>
+                <!-- age -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Age</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
+                    <input nz-input formControlName="age" placeholder="" />
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's age!
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <!-- vaccine -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Vaccine UTD</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                    <nz-select [(ngModel)]="selectedVaccine" nzAllowClear nzPlaceHolder="Choose" formControlName="vaccine">
+                      <nz-option nzValue="true" nzLabel="True"></nz-option>
+                      <nz-option nzValue="false" nzLabel="False"></nz-option>
+                    </nz-select>
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's VUTD !
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+                <!-- provider -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Provider</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                    <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Choose" formControlName="provider">
+                      <nz-option nzValue="From Store" nzLabel="From Store"></nz-option>
+                      <nz-option nzValue="From Someone" nzLabel="From Someone"></nz-option>
+                    </nz-select>
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's provider !
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+            
+                <!-- price -->
+                <nz-form-item>
+                  <nz-form-label [nzSpan]="7" nzRequired>Price</nz-form-label>
+                  <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
+                    <input nz-input formControlName="price" placeholder="" />
+                    <ng-template #userErrorTpl let-control>
+                      <ng-container *ngIf="control.hasError('required')">
+                        Please input your pet's price!
+                      </ng-container>
+                    </ng-template>
+                  </nz-form-control>
+                </nz-form-item>
+            
+                <nz-form-item>
+                  <nz-form-control [nzOffset]="7" [nzSpan]="12">
+                    <button nz-button nzType="primary" [disabled]="!validateForm.valid" style="float: right">Save</button>
+                  </nz-form-control>
+                </nz-form-item>
+              </form>
+              <div style="padding-bottom: 12px;"></div>
+            </nz-modal>
 
-          <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
-<!-- name -->
-            <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>Pet's Name</nz-form-label>
-              <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
-                <input nz-input formControlName="petName" placeholder="async validate try to write JasonWood" />
-                <ng-template #userErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    Please input your pet's name!
-                  </ng-container>
-                  <ng-container *ngIf="control.hasError('duplicated')">
-                    The username is redundant!
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-<!-- gender -->
-            <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>Gender</nz-form-label>
-              <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
-
-                <nz-select [(ngModel)]="selectedValue" nzAllowClear nzPlaceHolder="Choose" formControlName="gender" >
-                    <nz-option nzValue="jack" nzLabel="Jack"></nz-option>
-                    <nz-option nzValue="lucy" nzLabel="Lucy"></nz-option>
-                    <nz-option nzValue="disabled" nzLabel="Disabled" nzDisabled></nz-option>
-                  </nz-select>
-
-                <ng-template #userErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    Please input your pet's gender!
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-<!-- age -->
-            <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>Age</nz-form-label>
-              <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
-                <input nz-input formControlName="age" placeholder="async validate try to write JasonWood" />
-                <ng-template #userErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    Please input your pet's age!
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-<!-- vaccine -->
-            <nz-form-item>
-              <nz-form-label [nzSpan]="7" nzRequired>Vaccine status</nz-form-label>
-              <nz-form-control [nzSpan]="12" nzHasFeedback nzValidatingTip="Validating..." [nzErrorTip]="userErrorTpl">
-                <input nz-input formControlName="Vacccine" placeholder="async validate try to write JasonWood" />
-                <ng-template #userErrorTpl let-control>
-                  <ng-container *ngIf="control.hasError('required')">
-                    Please input your pet's vaccine status!
-                  </ng-container>
-                </ng-template>
-              </nz-form-control>
-            </nz-form-item>
-
-           
-            <nz-form-item>
-              <nz-form-control [nzOffset]="7" [nzSpan]="12">
-                <button nz-button nzType="primary" [disabled]="!validateForm.valid" style="float: right">Add</button>
-              </nz-form-control>
-            </nz-form-item>
-          </form>
-
-        </nz-modal>
+          
 
       </div>
       <div class="div top-right">
@@ -119,12 +169,11 @@
         <button nz-button nzType="default" class="logoutBtn" (click)="logoutClick()">Log out</button>
       </div>
 
-
     </nz-header>
     <nz-content>
       <div class="inner-content">
         <div class="cardList">
-            <app-card></app-card>
+            <ng-container #container></ng-container>
         </div>
       </div>
     </nz-content>

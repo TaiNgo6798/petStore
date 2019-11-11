@@ -80,6 +80,7 @@ export function provideConfig() {
       useFactory: provideConfig
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [CardComponent]
 })
 export class AppModule { }
