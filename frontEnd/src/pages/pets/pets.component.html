@@ -39,9 +39,9 @@
 <!-- modal -->
           <nz-modal [(nzVisible)]="isVisible" nzTitle="Add your pet" [nzFooter]="null" (nzOnCancel)="handleCancel()">
 
-              <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)">
+              <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm(validateForm.value)" >
                 <!-- name -->
-                <nz-form-item>
+                <nz-form-item >
                   <nz-form-label [nzSpan]="7" nzRequired>Pet's Name</nz-form-label>
                   <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
                     <input nz-input formControlName="name" placeholder="" />
@@ -68,7 +68,7 @@
                 <nz-form-item>
                   <nz-form-label [nzSpan]="7" nzRequired>Image link</nz-form-label>
                   <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
-                    <input nz-input formControlName="image" placeholder="" />
+                    <input nz-input formControlName="img" placeholder="" />
                     <ng-template #userErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
                         Please input your pet's image!
@@ -108,8 +108,8 @@
                   <nz-form-label [nzSpan]="7" nzRequired>Vaccine UTD</nz-form-label>
                   <nz-form-control [nzSpan]="12" nzHasFeedback [nzErrorTip]="userErrorTpl">
                     <nz-select [(ngModel)]="selectedVaccine" nzAllowClear nzPlaceHolder="Choose" formControlName="vaccine">
-                      <nz-option nzValue="true" nzLabel="True"></nz-option>
-                      <nz-option nzValue="false" nzLabel="False"></nz-option>
+                      <nz-option nzValue="true" nzLabel="Yes"></nz-option>
+                      <nz-option nzValue="false" nzLabel="No"></nz-option>
                     </nz-select>
                     <ng-template #userErrorTpl let-control>
                       <ng-container *ngIf="control.hasError('required')">
@@ -172,9 +172,11 @@
     </nz-header>
     <nz-content>
       <div class="inner-content">
-        <div class="cardList">
-            <ng-container #container></ng-container>
-        </div>
+          <nz-spin [nzSpinning]="isSpinning" [nzDelay]="500">
+              <div class="cardList">
+                  <ng-container #container></ng-container>
+              </div>
+            </nz-spin>
       </div>
     </nz-content>
     <nz-footer>MyPet ©2019 Implement By Angular</nz-footer>

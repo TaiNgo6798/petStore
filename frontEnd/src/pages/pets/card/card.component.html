@@ -8,7 +8,11 @@
   <img alt="example" src="{{data.img}}" />
 </ng-template>
 <ng-template #actionSetting>
-  <i nz-icon nzType="delete" nz-popconfirm nzPopconfirmTitle="Are you sure?"></i>
+  <i nz-icon nzType="delete" nz-popconfirm nzPopconfirmTitle="Are you sure?" 
+  nzOkText="ok"
+  nzCancelText="cancel"
+  (nzOnConfirm)="deletePet()"
+  ></i>
   <ng-template #iconTpl>
     <i nz-icon nzType="question-circle-o" style="color: red;"></i>
   </ng-template>
@@ -182,7 +186,7 @@
 
         <div class="row">
             <p style="font-weight: bold;">Vaccine Up-to-date: </p>
-            <p style="font-weight: normal; color: rgb(0, 167, 0); font-size: large;">{{data.vaccine === true ? 'Yes' : 'No'}}
+            <p style="font-weight: normal; color: rgb(0, 167, 0); font-size: large;">{{data.vaccineUpToDate === true ? 'Yes' : 'No'}}
               </p>
         </div>
 

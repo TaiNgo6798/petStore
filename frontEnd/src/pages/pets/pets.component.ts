@@ -1,6 +1,6 @@
 import { CardComponent } from './card/card.component';
 
-import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ViewContainerRef, ComponentFactoryResolver, ComponentRef, Output } from '@angular/core';
 import { Router } from "@angular/router"
 import { AuthService } from "angularx-social-login";
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
@@ -25,31 +25,25 @@ export class PetsComponent implements OnInit {
   componentRef: ComponentRef<CardComponent>;
 
 
-  renderCard() {
+  renderCard(input) {
     const container = this.container;
-   // container.clear();
+    // container.clear();
     const injector = container.injector;
     const cfr: ComponentFactoryResolver = injector.get(ComponentFactoryResolver);
     const componentFactory = cfr.resolveComponentFactory(CardComponent);
     // const componentRef = container.createComponent(componentFactory, container.length, injector);
     const componentRef = container.createComponent(componentFactory, 0, injector);
-    componentRef.instance.data = {
-      name: 'pet1',
-      kind:'dog',
-      character:'funny', 
-      gender: true,
-      vaccineUpToDate: true,
-      provider: 'HCM',
-      age:2,
-      price:200,
-      img: 'https://images.theconversation.com/files/205966/original/file-20180212-58348-7huv6f.jpeg?ixlib=rb-1.1.0&q=45&auto=format&w=926&fit=clip',
-    };
+    componentRef.instance.data = input
     // componentRef.changeDetectorRef.detectChanges();
     this.componentRef = componentRef;
   }
 
   isVisible = false;
   validateForm: FormGroup;
+  tokenFromStorage = JSON.parse(localStorage.getItem('token'));
+  token = this.tokenFromStorage ? this.tokenFromStorage : 'randomshittoken'; // your token
+  isSpinning = true
+
 
   constructor(
     private fb: FormBuilder,
@@ -63,12 +57,12 @@ export class PetsComponent implements OnInit {
       age: ['', [Validators.required]],
       vaccine: ['', [Validators.required]],
       price: ['', [Validators.required]],
-      character:  ['', [Validators.required]],
-      image:  ['', [Validators.required]],
-      provider:  ['', [Validators.required]]
+      character: ['', [Validators.required]],
+      img: ['', [Validators.required]],
+      provider: ['', [Validators.required]]
     });
-   }
-  
+  }
+
   currentUser = JSON.parse(localStorage.getItem('currentUser'))
 
   submitForm(value: any): void {
@@ -76,27 +70,53 @@ export class PetsComponent implements OnInit {
       this.validateForm.controls[key].markAsDirty();
       this.validateForm.controls[key].updateValueAndValidity();
     }
-    console.log(value);
+
+    const { name, character, gender, vaccine, provider, age, price, img } = value
+
+    axios({
+      method: 'POST',
+      url: `http://localhost:8080/api/petshop/pets?token=${this.token}`,
+      data: {
+        name,
+        character,
+        gender,
+        vaccineUpToDate: vaccine,
+        provider,
+        age,
+        price,
+        img
+      }
+    })
+      .then((response: any) => {
+        this.loadPetData()
+        this.notification.config({
+          nzPlacement: 'bottomRight'
+        })
+        this.notification.create(
+          'success',
+          'Đã thêm mới pet !',
+          ""
+        )
+
+      }).catch(err => {
+        this.notification.config({
+          nzPlacement: 'bottomRight'
+        })
+        this.notification.create(
+          'error',
+          err,
+          ""
+        )
+      })
+
     this.handleOk()
   }
+
 
 
   validateConfirmPassword(): void {
     setTimeout(() => this.validateForm.controls.confirm.updateValueAndValidity());
   }
-
-  userNameAsyncValidator = (control: FormControl) =>
-    new Observable((observer: Observer<ValidationErrors | null>) => {
-      setTimeout(() => {
-        if (control.value === 'JasonWood') {
-          // you have to return `{error: true}` to mark it as an error event
-          observer.next({ error: true, duplicated: true });
-        } else {
-          observer.next(null);
-        }
-        observer.complete();
-      }, 1000);
-    });
 
   confirmValidator = (control: FormControl): { [s: string]: boolean } => {
     if (!control.value) {
@@ -110,6 +130,8 @@ export class PetsComponent implements OnInit {
   showModal(): void {
     this.isVisible = true;
   }
+
+
 
   handleOk(): void {
     console.log('Button ok clicked!');
@@ -145,15 +167,15 @@ export class PetsComponent implements OnInit {
   }
 
 
-  ngOnInit() {
-    this.renderCard()
-    var currentUser = JSON.parse(localStorage.getItem('token'));
-    var token = currentUser ? currentUser : 'randomshittoken'; // your token
+  loadPetData(): void {
+    this.isSpinning = true
+    const container = this.container;
+    container.clear();
     axios({
       method: 'GET',
-      url: `http://localhost:8080/api/petshop/pets?token=${token}`,
+      url: `http://localhost:8080/api/petshop/pets?token=${this.token}`,
     })
-      .then((response: any) => {
+      .then(async (response: any) => {
         if (response.data.success === false) {
           this.notification.config({
             nzPlacement: 'bottomRight'
@@ -164,8 +186,19 @@ export class PetsComponent implements OnInit {
             'Bạn chưa đăng nhập !',
             ""
           )
+        } else {
+          await response.data.map((v, k) => {
+            this.renderCard(v)
+          })
+          this.isSpinning = false
         }
       })
+  }
+
+
+  ngOnInit() {
+
+    this.loadPetData()
   }
 
 }

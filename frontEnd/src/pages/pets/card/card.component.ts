@@ -1,8 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Observable, Observer } from 'rxjs';
 import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
-
+import { NzNotificationService } from 'ng-zorro-antd/notification'
+import axios from 'axios'
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-card',
@@ -13,6 +15,7 @@ export class CardComponent implements OnInit {
 
   @Input()
   data: {
+    _id: String,
     name: String,
     kind:String,
     character:String, 
@@ -24,14 +27,19 @@ export class CardComponent implements OnInit {
     img: String,
   };
 
+
+
   isVisible = false;
   detailVisible = false;
 
 
   validateForm: FormGroup;
   confirmModal: NzModalRef; // For testing by now
+  isSpinning: boolean;
   constructor(
     private fb: FormBuilder,
+    private router: Router,
+    private notification: NzNotificationService,
   ) {
     this.validateForm = this.fb.group({
       name: [''],
@@ -45,6 +53,22 @@ export class CardComponent implements OnInit {
     });
    }
 
+   tokenFromStorage = JSON.parse(localStorage.getItem('token'));
+     token = this.tokenFromStorage ? this.tokenFromStorage : 'randomshittoken'; // your token
+   deletePet(): void{
+    axios({
+      method: 'DELETE',
+      url: `http://localhost:8080/api/petshop/pets/${this.data._id}?token=${this.token}`,
+
+    })
+      .then( async (response: any) => {
+        window.location.reload();
+      }).catch((err) => {
+        console.log(err)
+      })
+  }
+  
+
   detailClick(): void{
     this.detailVisible=true
   }
@@ -54,7 +78,43 @@ export class CardComponent implements OnInit {
       this.validateForm.controls[key].markAsDirty();
       this.validateForm.controls[key].updateValueAndValidity();
     }
-    console.log(value);
+
+    const {  name, character, gender, vaccineUpToDate, provider, age, price, img } = value
+
+    axios({
+      method: 'PUT',
+      url: `http://localhost:8080/api/petshop/pets/${this.data._id}?token=${this.token}`,
+      data: {
+        name,
+        character,
+        gender,
+        vaccineUpToDate,
+        provider,
+        age,
+        price,
+        img
+      }
+    })
+      .then((response: any) => {
+        this.notification.config({
+          nzPlacement: 'bottomRight'
+        })
+        this.notification.create(
+          'success',
+          'Đã sửa !',
+          ""
+        )
+          window.location.reload()
+      }).catch(err => {
+        this.notification.config({
+          nzPlacement: 'bottomRight'
+        })
+        this.notification.create(
+          'error',
+          err,
+          ""
+        )
+      })
     this.handleOk()
   }
 
