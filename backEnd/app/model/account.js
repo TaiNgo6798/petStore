@@ -18,10 +18,9 @@ var AccountSchema = new Schema({
   email: String,
   phone: String,
   address: String,
-  role: {type:Object,default:{
-    pet:['see']
-  }},
-  lock:{type:Boolean,default:true},
+  role: {type: Array,default:
+    ['PET_SEE']},
+  lock:{type:Boolean,default:false},
   username: { type: String, required: true, index: { unique: true } },
   password: { type: String, required: true, select: false }
 });

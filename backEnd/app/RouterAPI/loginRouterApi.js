@@ -63,7 +63,7 @@ apiRouterLogin.post("/login", function(req, res) {
           });
         }
       } else {
-        if (account.lock) {
+        if (!account.lock) {
           // check if password matches
           var validPassword = account.comparePassword(req.body.password);
           if (validPassword || account.provider === req.body.provider) {
