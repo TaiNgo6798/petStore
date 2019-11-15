@@ -45,7 +45,7 @@ apiRouterAccount
         if (req.body.role) {
           account.role = req.body.role;
         }
-        if(req.decoded.role === 'admin'){
+        if(req.decoded.role[0] === 'admin'){
           if (req.body.lock) {
             account.lock = req.body.lock;
           }
