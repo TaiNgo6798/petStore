@@ -8,8 +8,6 @@ apiRouterLogin.post("/login", function(req, res) {
   // find the Account
 
   function createToken(account) {
-    console.log(account.id);
-
     var token = jwt.sign(
       {
         id: account.id,
@@ -64,9 +62,10 @@ apiRouterLogin.post("/login", function(req, res) {
         }
       } else {
         if (!account.lock) {
+          
           // check if password matches
           var validPassword = account.comparePassword(req.body.password);
-          if (validPassword || account.provider === req.body.provider) {
+          if ((validPassword || account.provider === req.body.provider) && req.body.provider) {
             // if User is found and password is right // create a token
             createToken(account);
           } else {
