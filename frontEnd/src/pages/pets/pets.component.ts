@@ -23,7 +23,7 @@ export class PetsComponent implements OnInit {
   }) container: ViewContainerRef;
 
   componentRef: ComponentRef<CardComponent>;
-account
+  account
 
   renderCard(input) {
     const container = this.container;
@@ -34,6 +34,7 @@ account
     // const componentRef = container.createComponent(componentFactory, container.length, injector);
     const componentRef = container.createComponent(componentFactory, 0, injector);
     componentRef.instance.data = input
+    componentRef.instance.account = this.account
     // componentRef.changeDetectorRef.detectChanges();
     this.componentRef = componentRef;
   }
@@ -71,45 +72,46 @@ account
       this.validateForm.controls[key].updateValueAndValidity();
     }
 
-    const { name, character, gender, vaccine, provider, age, price, img } = value
-
-    axios({
-      method: 'POST',
-      url: `http://localhost:8080/api/petshop/pets?token=${this.token}`,
-      data: {
-        name,
-        character,
-        gender,
-        vaccineUpToDate: vaccine,
-        provider,
-        age,
-        price,
-        img
-      }
-    })
-      .then((response: any) => {
-        this.loadPetData()
-        this.notification.config({
-          nzPlacement: 'bottomRight'
-        })
-        this.notification.create(
-          'success',
-          'Đã thêm mới pet !',
-          ""
-        )
-
-      }).catch(err => {
-        this.notification.config({
-          nzPlacement: 'bottomRight'
-        })
-        this.notification.create(
-          'error',
-          err,
-          ""
-        )
+      const { name, character, gender, vaccine, provider, age, price, img } = value
+      console.log(value)
+      axios({
+        method: 'POST',
+        url: `http://localhost:8080/api/petshop/pets?token=${this.token}`,
+        data: {
+          name,
+          character,
+          gender,
+          vaccineUpToDate: vaccine,
+          provider,
+          age,
+          price,
+          img
+        }
       })
+        .then((response: any) => {
+          this.loadPetData()
+          this.notification.config({
+            nzPlacement: 'bottomRight'
+          })
+          this.notification.create(
+            'success',
+            'Đã thêm mới pet !',
+            ""
+          )
 
-    this.handleOk()
+        }).catch(err => {
+          this.notification.config({
+            nzPlacement: 'bottomRight'
+          })
+          this.notification.create(
+            'error',
+            err,
+            ""
+          )
+        })
+
+      this.handleOk()
+    
   }
 
 
@@ -128,7 +130,18 @@ account
   };
 
   showModal(): void {
+    if (this.account.role.indexOf('PET_ADD') === -1 && this.account.role.indexOf('admin') === -1) {
+      this.notification.config({
+        nzPlacement: 'bottomRight'
+      })
+      this.notification.create(
+        'error',
+        'Bạn không có quyền thêm mới pet !',
+        ""
+      )
+    } else {
     this.isVisible = true;
+    }
   }
 
 
@@ -158,7 +171,7 @@ account
     this.router.navigateByUrl('/dashboard')
   }
 
-  permissionsPage(): void{
+  permissionsPage(): void {
     this.router.navigateByUrl('/permissions')
   }
 
@@ -170,25 +183,22 @@ account
     this.router.navigateByUrl('/myaccount')
   }
 
-  checkPermis():void{
+  checkPermis(): void {
     const role = window.document.querySelector('.roleMenu')
-   if(this.account.role.indexOf('admin') === -1)
-   {
-     role.setAttribute("style", "Display: none")
-   }
+    if (this.account.role.indexOf('admin') === -1) {
+      role.setAttribute("style", "Display: none")
+    }
 
-   
+
     const pet = window.document.querySelector('.petsMenu')
-   if(this.account.role.indexOf('PET_SEE') === -1 && this.account.role.indexOf('admin') === -1)
-   {
-     pet.setAttribute("style", "Display: none")
-   }
+    if (this.account.role.indexOf('PET_SEE') === -1 && this.account.role.indexOf('admin') === -1) {
+      pet.setAttribute("style", "Display: none")
+    }
 
     const cus = window.document.querySelector('.customersMenu')
-   if(this.account.role.indexOf('CUSTOMER_SEE') === -1 && this.account.role.indexOf('admin') === -1)
-   {
-     cus.setAttribute("style", "Display: none")
-   }
+    if (this.account.role.indexOf('CUSTOMER_SEE') === -1 && this.account.role.indexOf('admin') === -1) {
+      cus.setAttribute("style", "Display: none")
+    }
   }
 
   loadPetData(): void {

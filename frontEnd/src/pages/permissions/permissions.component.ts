@@ -70,7 +70,6 @@ export class PermissionsComponent implements OnInit {
         }
       }).then(() => {
         this.arrayPermissions = []
-        
       })
     })
     this.notification.config({

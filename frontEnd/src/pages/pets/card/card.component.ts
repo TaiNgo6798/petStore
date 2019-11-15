@@ -17,21 +17,21 @@ export class CardComponent implements OnInit {
   data: {
     _id: String,
     name: String,
-    kind:String,
-    character:String, 
+    kind: String,
+    character: String,
     gender: Boolean,
     vaccineUpToDate: Boolean,
     provider: String,
-    age:Number,
-    price:Number,
+    age: Number,
+    price: Number,
     img: String,
   };
 
+  account
 
 
   isVisible = false;
   detailVisible = false;
-
 
   validateForm: FormGroup;
   confirmModal: NzModalRef; // For testing by now
@@ -47,30 +47,41 @@ export class CardComponent implements OnInit {
       age: [''],
       vaccine: [''],
       price: [''],
-      character:  [''],
-      image:  [''],
-      provider:  ['']
+      character: [''],
+      image: [''],
+      provider: ['']
     });
-   }
-
-   tokenFromStorage = JSON.parse(localStorage.getItem('token'));
-     token = this.tokenFromStorage ? this.tokenFromStorage : 'randomshittoken'; // your token
-   deletePet(): void{
-    axios({
-      method: 'DELETE',
-      url: `http://localhost:8080/api/petshop/pets/${this.data._id}?token=${this.token}`,
-
-    })
-      .then( async (response: any) => {
-        window.location.reload();
-      }).catch((err) => {
-        console.log(err)
-      })
   }
-  
 
-  detailClick(): void{
-    this.detailVisible=true
+  tokenFromStorage = JSON.parse(localStorage.getItem('token'));
+  token = this.tokenFromStorage ? this.tokenFromStorage : 'randomshittoken'; // your token
+  deletePet(): void {
+    if (this.account.role.indexOf('PET_DELETE') === -1 && this.account.role.indexOf('admin') === -1) {
+      this.notification.config({
+        nzPlacement: 'bottomRight'
+      })
+      this.notification.create(
+        'error',
+        'Bạn không có quyền xoá pet !',
+        ""
+      )
+    } else {
+      axios({
+        method: 'DELETE',
+        url: `http://localhost:8080/api/petshop/pets/${this.data._id}?token=${this.token}`,
+
+      })
+        .then(async (response: any) => {
+          window.location.reload();
+        }).catch((err) => {
+          console.log(err)
+        })
+    }
+  }
+
+
+  detailClick(): void {
+    this.detailVisible = true
   }
 
   submitForm(value: any): void {
@@ -78,44 +89,48 @@ export class CardComponent implements OnInit {
       this.validateForm.controls[key].markAsDirty();
       this.validateForm.controls[key].updateValueAndValidity();
     }
+    console.log(this.account)
 
-    const {  name, character, gender, vaccineUpToDate, provider, age, price, img } = value
 
-    axios({
-      method: 'PUT',
-      url: `http://localhost:8080/api/petshop/pets/${this.data._id}?token=${this.token}`,
-      data: {
-        name,
-        character,
-        gender,
-        vaccineUpToDate,
-        provider,
-        age,
-        price,
-        img
-      }
-    })
-      .then((response: any) => {
-        this.notification.config({
-          nzPlacement: 'bottomRight'
-        })
-        this.notification.create(
-          'success',
-          'Đã sửa !',
-          ""
-        )
-          window.location.reload()
-      }).catch(err => {
-        this.notification.config({
-          nzPlacement: 'bottomRight'
-        })
-        this.notification.create(
-          'error',
-          err,
-          ""
-        )
+      const { name, character, gender, vaccine, provider, age, price, img } = value
+
+      axios({
+        method: 'PUT',
+        url: `http://localhost:8080/api/petshop/pets/${this.data._id}?token=${this.token}`,
+        data: {
+          name,
+          character,
+          gender,
+          vaccineUpToDate: vaccine,
+          provider,
+          age,
+          price,
+          img
+        }
       })
-    this.handleOk()
+        .then((response: any) => {
+          this.notification.config({
+            nzPlacement: 'bottomRight'
+          })
+          this.notification.create(
+            'success',
+            'Đã sửa !',
+            ""
+          )
+          window.location.reload()
+        }).catch(err => {
+          this.notification.config({
+            nzPlacement: 'bottomRight'
+          })
+          this.notification.create(
+            'error',
+            err,
+            ""
+          )
+        })
+      this.handleOk()
+
+    
   }
 
 
@@ -146,21 +161,49 @@ export class CardComponent implements OnInit {
   };
 
   showModal(): void {
+    if (this.account.role.indexOf('PET_EDIT') === -1 && this.account.role.indexOf('admin') === -1) {
+      this.notification.config({
+        nzPlacement: 'bottomRight'
+      })
+      this.notification.create(
+        'error',
+        'Bạn không có quyền sửa pet !',
+        ""
+      )
+    } else {
     this.isVisible = true;
+    }
   }
 
   handleOk(): void {
-    console.log('Button ok clicked!');  
+    console.log('Button ok clicked!');
     this.isVisible = false;
   }
 
   handleCancel(): void {
     console.log('Button cancel clicked!');
     this.isVisible = false;
-    this.detailVisible=false
+    this.detailVisible = false
   }
 
   ngOnInit() {
+
+    axios({
+      method: 'GET',
+      url: `http://localhost:8080/api/petshop/current?token=${this.token}`
+
+    })
+      .then((response: any) => {
+        axios({
+          method: 'GET',
+          url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${this.token}`
+
+        })
+          .then((response: any) => {
+            this.account = response.data
+          })
+      })
+
   }
 
 }

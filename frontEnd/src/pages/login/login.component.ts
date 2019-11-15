@@ -68,13 +68,7 @@ export class LoginComponent implements OnInit {
 
                     })
                       .then((response: any) => {
-                        if (response.data.lock) {
-                          this.notification.create(
-                            'error',
-                            'Tài khoản của bạn đã bị khoá !',
-                            ""
-                          )
-                        } else {
+
                           const { name, email, address, phone, image, _id } = response.data
                           localStorage.setItem('currentUser', JSON.stringify({
                             firstName: name.split(' ')[0],
@@ -93,7 +87,7 @@ export class LoginComponent implements OnInit {
                             'Đăng nhập thành công !',
                             ""
                           )
-                        }
+                        
                       })
                   })
 
@@ -101,7 +95,7 @@ export class LoginComponent implements OnInit {
               else {
                 this.notification.create(
                   'error',
-                  'Sai tài khoản hoặc mật khẩu !',
+                  response.data.message,
                   ""
                 )
               }
@@ -151,7 +145,7 @@ export class LoginComponent implements OnInit {
                         if (response.data.lock) {
                           this.notification.create(
                             'error',
-                            'Tài khoản của bạn đã bị khoá !',
+                            response.data.message,
                             ""
                           )
                         } else {
@@ -181,7 +175,7 @@ export class LoginComponent implements OnInit {
               else {
                 this.notification.create(
                   'error',
-                  'Tài khoản của bạn đã bị khoá !',
+                  response.data.message,
                   ""
                 )
               }
@@ -244,6 +238,7 @@ export class LoginComponent implements OnInit {
         },
       })
         .then((response: any) => {
+          console.log(response)
           if (response.data.success === true) {
             var token = response.data.token
             axios({
@@ -258,15 +253,6 @@ export class LoginComponent implements OnInit {
 
                 })
                   .then((response: any) => {
-
-                    if (response.data.lock) {
-                      this.notification.create(
-                        'error',
-                        'Tài khoản của bạn đã bị khoá !',
-                        ""
-                      )
-                    }
-                    else {
                       const { name, email, address, phone, image, _id } = response.data
                       localStorage.setItem('currentUser', JSON.stringify({
                         firstName: name.split(' ')[0],
@@ -285,7 +271,7 @@ export class LoginComponent implements OnInit {
                         'Đăng nhập thành công !',
                         ""
                       )
-                    }
+                    
                   })
               })
 
@@ -293,7 +279,7 @@ export class LoginComponent implements OnInit {
           else {
             this.notification.create(
               'error',
-              'Sai tài khoản hoặc mật khẩu !',
+              response.data.message,
               ""
             )
           }
