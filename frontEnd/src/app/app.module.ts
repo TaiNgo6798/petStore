@@ -28,6 +28,8 @@ import { MyaccountComponent } from 'src/pages/myaccount/myaccount.component';
 import { CustomersComponent } from 'src/pages/customers/customers.component';
 import { ListcustomersComponent } from 'src/pages/listcustomers/listcustomers.component';
 import { AvatarComponent } from 'src/pages/avatar/avatar.component';
+import { PermissionsComponent } from 'src/pages/permissions/permissions.component';
+
 
 
 registerLocaleData(en);
@@ -58,7 +60,8 @@ export function provideConfig() {
     MyaccountComponent,
     CustomersComponent,
     ListcustomersComponent,
-    AvatarComponent
+    AvatarComponent,
+    PermissionsComponent
   ],
   imports: [
     SocialLoginModule,

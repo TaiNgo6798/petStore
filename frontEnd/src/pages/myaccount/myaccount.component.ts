@@ -163,6 +163,10 @@ export class MyaccountComponent implements OnInit {
     this.router.navigateByUrl('/customers')
   }
 
+  permissionsPage(): void{
+    this.router.navigateByUrl('/permissions')
+  }
+
   myaccountPage(): void {
     this.router.navigateByUrl('/myaccount')
   }

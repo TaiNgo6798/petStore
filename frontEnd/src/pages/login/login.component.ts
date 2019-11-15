@@ -68,28 +68,35 @@ export class LoginComponent implements OnInit {
 
                     })
                       .then((response: any) => {
+                        if (response.data.lock) {
+                          this.notification.create(
+                            'error',
+                            'Tài khoản của bạn đã bị khoá !',
+                            ""
+                          )
+                        } else {
+                          const { name, email, address, phone, image, _id } = response.data
+                          localStorage.setItem('currentUser', JSON.stringify({
+                            firstName: name.split(' ')[0],
+                            name,
+                            address,
+                            phone,
+                            photoUrl: image,
+                            email,
+                            _id
+                          }))
+                          localStorage.setItem('token', JSON.stringify(token))
 
-                        const { name, email, address, phone, image, _id } = response.data
-                        localStorage.setItem('currentUser', JSON.stringify({
-                          firstName: name.split(' ')[0],
-                          name,
-                          address,
-                          phone,
-                          photoUrl: image,
-                          email,
-                          _id
-                        }))
-                        localStorage.setItem('token', JSON.stringify(token))
-
-                        this.router.navigateByUrl('/dashboard')
-                        this.notification.create(
-                          'success',
-                          'Đăng nhập thành công !',
-                          ""
-                        )
+                          this.router.navigateByUrl('/dashboard')
+                          this.notification.create(
+                            'success',
+                            'Đăng nhập thành công !',
+                            ""
+                          )
+                        }
                       })
                   })
-               
+
               }
               else {
                 this.notification.create(
@@ -141,28 +148,35 @@ export class LoginComponent implements OnInit {
 
                     })
                       .then((response: any) => {
+                        if (response.data.lock) {
+                          this.notification.create(
+                            'error',
+                            'Tài khoản của bạn đã bị khoá !',
+                            ""
+                          )
+                        } else {
+                          const { name, email, address, phone, image, _id } = response.data
+                          localStorage.setItem('currentUser', JSON.stringify({
+                            firstName: name.split(' ')[0],
+                            name,
+                            address,
+                            phone,
+                            photoUrl: image,
+                            email,
+                            _id
+                          }))
+                          localStorage.setItem('token', JSON.stringify(token))
 
-                        const { name, email, address, phone, image, _id } = response.data
-                        localStorage.setItem('currentUser', JSON.stringify({
-                          firstName: name.split(' ')[0],
-                          name,
-                          address,
-                          phone,
-                          photoUrl: image,
-                          email,
-                          _id
-                        }))
-                        localStorage.setItem('token', JSON.stringify(token))
-
-                        this.router.navigateByUrl('/dashboard')
-                        this.notification.create(
-                          'success',
-                          'Đăng nhập thành công !',
-                          ""
-                        )
+                          this.router.navigateByUrl('/dashboard')
+                          this.notification.create(
+                            'success',
+                            'Đăng nhập thành công !',
+                            ""
+                          )
+                        }
                       })
                   })
-               
+
               }
               else {
                 this.notification.create(
@@ -232,40 +246,49 @@ export class LoginComponent implements OnInit {
         .then((response: any) => {
           if (response.data.success === true) {
             var token = response.data.token
+            axios({
+              method: 'GET',
+              url: `http://localhost:8080/api/petshop/current?token=${token}`
+
+            })
+              .then((response: any) => {
                 axios({
                   method: 'GET',
-                  url: `http://localhost:8080/api/petshop/current?token=${token}`
+                  url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
 
                 })
                   .then((response: any) => {
-                    axios({
-                      method: 'GET',
-                      url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
 
-                    })
-                      .then((response: any) => {
+                    if (response.data.lock) {
+                      this.notification.create(
+                        'error',
+                        'Tài khoản của bạn đã bị khoá !',
+                        ""
+                      )
+                    }
+                    else {
+                      const { name, email, address, phone, image, _id } = response.data
+                      localStorage.setItem('currentUser', JSON.stringify({
+                        firstName: name.split(' ')[0],
+                        name,
+                        address,
+                        phone,
+                        photoUrl: image,
+                        email,
+                        _id
+                      }))
+                      localStorage.setItem('token', JSON.stringify(token))
 
-                        const { name, email, address, phone, image, _id } = response.data
-                        localStorage.setItem('currentUser', JSON.stringify({
-                          firstName: name.split(' ')[0],
-                          name,
-                          address,
-                          phone,
-                          photoUrl: image,
-                          email,
-                          _id
-                        }))
-                        localStorage.setItem('token', JSON.stringify(token))
-
-                        this.router.navigateByUrl('/dashboard')
-                        this.notification.create(
-                          'success',
-                          'Đăng nhập thành công !',
-                          ""
-                        )
-                      })
+                      this.router.navigateByUrl('/dashboard')
+                      this.notification.create(
+                        'success',
+                        'Đăng nhập thành công !',
+                        ""
+                      )
+                    }
                   })
-               
+              })
+
           }
           else {
             this.notification.create(

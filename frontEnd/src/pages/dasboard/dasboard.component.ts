@@ -38,6 +38,9 @@ export class DasboardComponent implements OnInit {
   dashboardPage(): void{
     this.router.navigateByUrl('/dashboard')
   }
+  permissionsPage(): void{
+    this.router.navigateByUrl('/permissions')
+  }
 
   customersPage(): void{
     this.router.navigateByUrl('/customers')

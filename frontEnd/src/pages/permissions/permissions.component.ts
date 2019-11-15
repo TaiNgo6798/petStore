@@ -5,12 +5,11 @@ import { NzNotificationService } from 'ng-zorro-antd/notification'
 import axios from 'axios'
 
 @Component({
-  selector: 'app-customers',
-  templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.less']
+  selector: 'app-permissions',
+  templateUrl: './permissions.component.html',
+  styleUrls: ['./permissions.component.less']
 })
-export class CustomersComponent implements OnInit {
-
+export class PermissionsComponent implements OnInit {
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -18,6 +17,7 @@ export class CustomersComponent implements OnInit {
   ) { }
 
   currentUser = JSON.parse(localStorage.getItem('currentUser'))
+  photoUrl = this.currentUser.photoUrl ? this.currentUser.photoUrl : ''
 
   logoutClick(): void{
     localStorage.clear()
@@ -37,13 +37,12 @@ export class CustomersComponent implements OnInit {
   dashboardPage(): void{
     this.router.navigateByUrl('/dashboard')
   }
+  permissionsPage(): void{
+    this.router.navigateByUrl('/permissions')
+  }
 
   customersPage(): void{
     this.router.navigateByUrl('/customers')
-  }
-
-  permissionsPage(): void{
-    this.router.navigateByUrl('/permissions')
   }
 
   myaccountPage(): void{
@@ -54,6 +53,7 @@ export class CustomersComponent implements OnInit {
   ngOnInit() {
     var currentUser = JSON.parse(localStorage.getItem('token'));
     var token = currentUser ? currentUser : 'randomshittoken'; // your token
+    console.log(currentUser)
     axios({
       method: 'GET',
       url: `http://localhost:8080/api/petshop/pets?token=${token}`,
@@ -73,5 +73,4 @@ export class CustomersComponent implements OnInit {
         }
       })
   }
-
 }
