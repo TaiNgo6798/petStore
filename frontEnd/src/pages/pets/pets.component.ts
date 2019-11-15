@@ -23,7 +23,7 @@ export class PetsComponent implements OnInit {
   }) container: ViewContainerRef;
 
   componentRef: ComponentRef<CardComponent>;
-
+account
 
   renderCard(input) {
     const container = this.container;
@@ -170,6 +170,26 @@ export class PetsComponent implements OnInit {
     this.router.navigateByUrl('/myaccount')
   }
 
+  checkPermis():void{
+    const role = window.document.querySelector('.roleMenu')
+   if(this.account.role.indexOf('admin') === -1)
+   {
+     role.setAttribute("style", "Display: none")
+   }
+
+   
+    const pet = window.document.querySelector('.petsMenu')
+   if(this.account.role.indexOf('PET_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+     pet.setAttribute("style", "Display: none")
+   }
+
+    const cus = window.document.querySelector('.customersMenu')
+   if(this.account.role.indexOf('CUSTOMER_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+     cus.setAttribute("style", "Display: none")
+   }
+  }
 
   loadPetData(): void {
     this.isSpinning = true
@@ -191,6 +211,24 @@ export class PetsComponent implements OnInit {
             ""
           )
         } else {
+
+          axios({
+            method: 'GET',
+            url: `http://localhost:8080/api/petshop/current?token=${this.token}`
+
+          })
+            .then((response: any) => {
+              axios({
+                method: 'GET',
+                url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${this.token}`
+
+              })
+                .then((response: any) => {
+                  this.account = response.data
+                  this.checkPermis()
+                })
+            })
+
           await response.data.map((v, k) => {
             this.renderCard(v)
           })

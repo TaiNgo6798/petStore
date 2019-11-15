@@ -5,23 +5,23 @@
       <h3>{{detailCurrentUser.name}}</h3>
     </div>
 
-    <ul nz-menu nzMode="inline" class="sider-menu">
-      <li nz-menu-item (click)="dashboardPage()">
-        <fa name="home"></fa> Dashboard
-      </li>
-      <li nz-menu-item nzSelected (click)="myaccountPage()">
-        <fa name="user"></fa> My account
-      </li>
-      <li nz-menu-item  (click)="permissionsPage()">
-        <fa name="cog"></fa> Roles management
-      </li>
-      <li nz-menu-item (click)="petsPage()">
-        <fa name="lemon-o	"></fa> Pets
-      </li>
-      <li nz-menu-item (click)="customersPage()">
-        <fa name="users"></fa> Customers
-      </li>
-    </ul>
+    <ul nz-menu nzMode="inline" class="sider-menu" >
+        <li nz-menu-item   (click)="dashboardPage()">
+          <fa name="home" ></fa> Dashboard
+        </li>
+        <li nz-menu-item  nzSelected (click)="myaccountPage()">
+          <fa name="user"></fa> My account
+        </li>
+        <li nz-menu-item  (click)="permissionsPage()" class='roleMenu'>
+          <fa name="cog"></fa> Roles management
+        </li>
+        <li nz-menu-item  (click)="petsPage()" class="petsMenu">
+          <fa name="lemon-o	"></fa> Pets
+        </li>
+        <li nz-menu-item  (click)="customersPage()" class="customersMenu">
+          <fa name="users"></fa> Customers
+        </li>
+      </ul>
 
   </nz-sider>
   <nz-layout class="right-layout">

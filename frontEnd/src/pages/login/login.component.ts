@@ -181,7 +181,7 @@ export class LoginComponent implements OnInit {
               else {
                 this.notification.create(
                   'error',
-                  'Sai tài khoản hoặc mật khẩu !',
+                  'Tài khoản của bạn đã bị khoá !',
                   ""
                 )
               }

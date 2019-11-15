@@ -34,6 +34,7 @@ export class MyaccountComponent implements OnInit {
   }
 
   currentUser = JSON.parse(localStorage.getItem('currentUser'))
+  account 
 
   detailCurrentUser = {
     firstName: '',
@@ -171,6 +172,27 @@ export class MyaccountComponent implements OnInit {
     this.router.navigateByUrl('/myaccount')
   }
 
+  checkPermis():void{
+    const role = window.document.querySelector('.roleMenu')
+   if(this.account.role.indexOf('admin') === -1)
+   {
+     role.setAttribute("style", "Display: none")
+   }
+
+   
+    const pet = window.document.querySelector('.petsMenu')
+   if(this.account.role.indexOf('PET_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+     pet.setAttribute("style", "Display: none")
+   }
+
+    const cus = window.document.querySelector('.customersMenu')
+   if(this.account.role.indexOf('CUSTOMER_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+     cus.setAttribute("style", "Display: none")
+   }
+  }
+
   ngOnInit() {
     var currentUser = JSON.parse(localStorage.getItem('token'));
     var token = currentUser ? currentUser : 'randomshittoken'; // your token
@@ -203,7 +225,9 @@ export class MyaccountComponent implements OnInit {
 
               })
                 .then((response: any) => {
-
+                  this.account = response.data
+                  this.checkPermis()
+                  
                   const { name, email, address, phone, image, _id } = response.data
                   this.detailCurrentUser = {
                     firstName: name.split(' ')[0],

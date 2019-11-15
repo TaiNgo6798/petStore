@@ -12,13 +12,13 @@
         <li nz-menu-item  (click)="myaccountPage()">
           <fa name="user"></fa> My account
         </li>
-        <li nz-menu-item  nzSelected (click)="rolePage()">
+        <li nz-menu-item  nzSelected (click)="permissionsPage()" class='roleMenu'>
           <fa name="cog"></fa> Roles management
         </li>
-        <li nz-menu-item  (click)="petsPage()">
+        <li nz-menu-item  (click)="petsPage()" class="petsMenu">
           <fa name="lemon-o	"></fa> Pets
         </li>
-        <li nz-menu-item  (click)="customersPage()">
+        <li nz-menu-item  (click)="customersPage()" class="customersMenu">
           <fa name="users"></fa> Customers
         </li>
       </ul>
@@ -47,19 +47,83 @@
     </nz-header>
     <nz-content>
       <div class="inner-content">
-        <nz-table >
+          <button [nzLoading]="loadingUpdate" nz-button [nzSize]="xlarge" nzType="primary" class="updatePermis" (click)="updatePermissions()">Update Permissions</button>
+        <nz-table nzBordered>
           <thead>
-            <tr>
-              <th>USER</th>
-              <th>SEE</th>
-              <th>ADD</th>
-              <th>EDIT</th>
-              <th>DELETE</th>
-              <th>LOCKED</th>
-            </tr>
+              <tr>
+                  <th rowspan="2" colspan="1" style="width: 250px;">PERMISSIONS</th>
+                  <th rowspan="1" colspan="1" *ngFor="let data of accounts">{{data.name}}</th>
+                </tr>
           </thead>
           <tbody>
+
+            <tr>
+              <td>LOCKED</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('LOCKED') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+            <tr>
+              <td>PET_SEE</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('PET_SEE') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
             
+            <tr>
+              <td>PET_ADD</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('PET_ADD') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+
+            <tr>
+              <td>PET_EDIT</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('PET_EDIT') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+
+            
+            <tr>
+              <td>PET_DELETE</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('PET_DELETE') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+            
+            <tr>
+              <td>CUSTOMER_SEE</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('CUSTOMER_SEE') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+            
+            <tr>
+              <td>CUSTOMER_ADD</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('CUSTOMER_ADD') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+
+            <tr>
+              <td>CUSTOMER_EDIT</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('CUSTOMER_EDIT') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+
+            
+            <tr>
+              <td>CUSTOMER_DELETE</td>
+              <td *ngFor="let data of accounts">
+                  <nz-switch [ngModel]="data.role.indexOf('CUSTOMER_DELETE') > -1 ? true : false" class="switch"></nz-switch>
+              </td>
+            </tr>
+            
+
+
+          </tbody>
         </nz-table>
       </div>
     </nz-content>

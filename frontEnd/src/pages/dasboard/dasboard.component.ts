@@ -19,6 +19,8 @@ export class DasboardComponent implements OnInit {
 
   currentUser = JSON.parse(localStorage.getItem('currentUser'))
   photoUrl = this.currentUser.photoUrl ? this.currentUser.photoUrl : ''
+  
+  account
 
   logoutClick(): void{
     localStorage.clear()
@@ -28,7 +30,6 @@ export class DasboardComponent implements OnInit {
 
   petsPage(): void{
     this.router.navigateByUrl('/pets')
-
   }
 
   menuClick(e): void{
@@ -50,11 +51,32 @@ export class DasboardComponent implements OnInit {
     this.router.navigateByUrl('/myaccount')
   }
 
+  checkPermis():void{
+    const role = window.document.querySelector('.roleMenu')
+   if(this.account.role.indexOf('admin') === -1)
+   {
+     role.setAttribute("style", "Display: none")
+   }
+
+   
+    const pet = window.document.querySelector('.petsMenu')
+   if(this.account.role.indexOf('PET_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+     pet.setAttribute("style", "Display: none")
+   }
+
+    const cus = window.document.querySelector('.customersMenu')
+   if(this.account.role.indexOf('CUSTOMER_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+     cus.setAttribute("style", "Display: none")
+   }
+  }
+
 
   ngOnInit() {
-    var currentUser = JSON.parse(localStorage.getItem('token'));
-    var token = currentUser ? currentUser : 'randomshittoken'; // your token
-    console.log(currentUser)
+    var token = JSON.parse(localStorage.getItem('token'));
+    console.log(token)
+    console.log(this.currentUser)
     axios({
       method: 'GET',
       url: `http://localhost:8080/api/petshop/pets?token=${token}`,
@@ -72,6 +94,27 @@ export class DasboardComponent implements OnInit {
             ""
           )
         }
+        else {
+          axios({
+            method: 'GET',
+            url: `http://localhost:8080/api/petshop/current?token=${token}`
+
+          })
+            .then((response: any) => {
+              axios({
+                method: 'GET',
+                url: `http://localhost:8080/api/petshop/accounts/${response.data.id}?token=${token}`
+
+              })
+                .then((response: any) => {
+                  this.account = response.data
+                  this.checkPermis()
+                })
+            })
+        }
       })
+
+      
+
   }
 }

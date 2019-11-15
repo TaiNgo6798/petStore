@@ -1,3 +1,4 @@
+import { MenuComponent } from './../pages/menu/menu.component';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -61,7 +62,8 @@ export function provideConfig() {
     CustomersComponent,
     ListcustomersComponent,
     AvatarComponent,
-    PermissionsComponent
+    PermissionsComponent,
+    MenuComponent
   ],
   imports: [
     SocialLoginModule,
