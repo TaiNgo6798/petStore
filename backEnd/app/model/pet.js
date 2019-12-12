@@ -12,6 +12,7 @@ var PetSchema = new Schema({
     age:Number,
     price:Number,
     img: String,
+    exist: Boolean
 });
 
 module.exports = mongoose.model('Pet',PetSchema);

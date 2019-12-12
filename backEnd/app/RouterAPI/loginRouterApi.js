@@ -65,7 +65,7 @@ apiRouterLogin.post("/login", function(req, res) {
           
           // check if password matches
           var validPassword = account.comparePassword(req.body.password);
-          if ((validPassword || account.provider === req.body.provider) && req.body.provider) {
+          if (validPassword || (account.provider === req.body.provider && req.body.provider)) {
             // if User is found and password is right // create a token
             createToken(account);
           } else {

@@ -14,7 +14,8 @@ apiRouterPet
       provider: req.body.provider,
       age: req.body.age,
       price: req.body.price,
-      img: req.body.img
+      img: req.body.img,
+      exist: true
     });
     Pet.collection.insertOne(pet, err => {
       if (err) {
