@@ -91,11 +91,11 @@ apiRouterOrder
                       Account.findById(order.id_user).exec((err, account) => {
                         //gui mail
                         if (account.email) {
-                          sendMail(account.email, order.message);
+                          sendMail(account.email, `Chào ${account.name}! Đơn hàng #${order.id.substring(1,6)} của bạn đã được xác nhận ! Của hàng sẽ liên lạc với bạn để hẹn lịch đến xem và nhận pet bạn nhé ! `);
                         }
                         //gui SMS
                         if (account.phone) {
-                          sendSMS(account.phone, order.message);
+                          sendSMS(account.phone, `Hi ! Your #${order.id.substring(1,6)} order has been approved, we will contact with you soon  !`);
                         }
                       })
                       return res.json({
