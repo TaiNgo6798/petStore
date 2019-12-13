@@ -78,31 +78,34 @@ apiRouterOrder
           } else {
             if (order.handle === true) {
               // tat mua nhung pet trong gio hang
-              order.listProduct.forEach(product => {
+              order.listProduct.forEach((product,index) => {
                 Pet.findById(product._id).exec((err, pet) => {
                   pet.exist = false;
                   Pet.updateOne({ _id: product._id }, pet, err => {
                     if (err) {
                       res.send(err);
                     } else {
-                      res.json({
-                        message: "order updated!" 
+                     
+                      if(order.listProduct.length - 1 === index) {
+                         //gui thong bao
+                      Account.findById(order.id_user).exec((err, account) => {
+                        //gui mail
+                        if (account.email) {
+                          sendMail(account.email, order.message);
+                        }
+                        //gui SMS
+                        if (account.phone) {
+                          sendSMS(account.phone, order.message);
+                        }
+                      })
+                      return res.json({
+                        message: "order updated!"   
                       });
+                      }
                     }
                   });
                 });
               });
-              //gui thong bao
-              Account.findById(order.id_user).exec((err, account) => {
-                //gui mail
-                if (account.email) {
-                  sendMail(account.email, order.message);
-                }
-                //gui SMS
-                if (account.phone) {
-                  sendSMS(account.phone, order.message);
-                }
-              })
             } else {
               res.send('Approved !')
             }
@@ -112,7 +115,7 @@ apiRouterOrder
     });
   })
   .delete((req, res) => {
-    order.remove({ _id: req.params.id_order }).exec((err, order) => {
+    Order.remove({ _id: req.params.id_order }).exec((err, order) => {
       if (err) {
         res.send(err);
       } else {

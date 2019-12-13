@@ -81,7 +81,7 @@ export class LoginComponent implements OnInit {
                           }))
                           localStorage.setItem('token', JSON.stringify(token))
 
-                          this.router.navigateByUrl('/dashboard')
+                          this.router.navigateByUrl('/shopping')
                           this.notification.create(
                             'success',
                             'Đăng nhập thành công !',
@@ -161,7 +161,7 @@ export class LoginComponent implements OnInit {
                           }))
                           localStorage.setItem('token', JSON.stringify(token))
 
-                          this.router.navigateByUrl('/dashboard')
+                          this.router.navigateByUrl('/shopping')
                           this.notification.create(
                             'success',
                             'Đăng nhập thành công !',
@@ -265,7 +265,7 @@ export class LoginComponent implements OnInit {
                       }))
                       localStorage.setItem('token', JSON.stringify(token))
 
-                      this.router.navigateByUrl('/dashboard')
+                      this.router.navigateByUrl('/shopping')
                       this.notification.create(
                         'success',
                         'Đăng nhập thành công !',

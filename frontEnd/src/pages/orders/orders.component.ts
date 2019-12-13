@@ -54,7 +54,10 @@ export class OrdersComponent implements OnInit {
       }
     }).then((res) => {
       console.log(res);
+      this.loadOrders()
     })
+
+    this.closeModal()
   }
 
   logoutClick(): void{
@@ -112,13 +115,23 @@ export class OrdersComponent implements OnInit {
    }
   }
 
+  deleteOrder(id):void{
+    axios({
+      method: 'DELETE',
+      url: `http://localhost:8080/api/petshop/orders/${id}?token=${this.token}`,
+    }).then((res) => {
+      console.log(res);
+      this.loadOrders()
+    })
+  }
+
   loadOrders():void{
     axios({
       method: 'GET',
       url: `http://localhost:8080/api/petshop/orders?token=${this.token}`,
     }).then((res) => {
         console.log(res.data);
-        this.ordersData = res.data
+        this.ordersData = res.data.reverse()
     })
   }
 

@@ -17,6 +17,14 @@
 
         <h2 class="small--text-center">Featured collection</h2>
 
+        <div style="margin: 2em; width: 30%;">
+          <nz-input-group [nzSuffix]="suffixIconSearch" >
+            <input  type="text" nz-input placeholder="input search text" (keydown)="search($event)"/>
+          </nz-input-group>
+          <ng-template #suffixIconSearch>
+            <i nz-icon nzType="search"></i>
+          </ng-template>
+        </div>
 
         <div class="">
           <!-- product start -->

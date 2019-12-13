@@ -10,6 +10,7 @@ export class SellingComponent implements OnInit {
 
   whichPage = 'home'
   cartCount
+  currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : {}
 
   constructor(
     private router: Router,

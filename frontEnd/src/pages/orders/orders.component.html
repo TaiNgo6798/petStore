@@ -50,6 +50,7 @@
     </nz-header>
     <nz-content>
       <div class="inner-content">
+        <button nz-button nzType="primary" (click)="loadOrders()" style="margin-bottom: 10px; margin-left: 90%;">Reload</button>
         <nz-table #nzTable [nzData]="listOfDisplayData">
           <thead>
             <tr>
@@ -76,7 +77,15 @@
               </td>
               <td>
                 <a (click)="openModal(data)">Detail</a> |
-                <a>Delete</a>
+                <a
+                nz-popconfirm
+                nzPopconfirmTitle="Are you sure?"
+                nzOkText="ok"
+                nzCancelText="cancel"
+                (nzOnConfirm)="deleteOrder(data._id)"
+                (nzOnCancel)="cancel()"
+                >Delete</a
+              >
               </td>
             </tr>
           </tbody>
@@ -99,7 +108,7 @@
 
 
 <nz-modal 
-nzWrapClassName="vertical-center-modal" 
+style="margin: 0"
 [(nzVisible)]="isVisibleMiddle" 
 [(nzTitle)]="currentOrderID"
 (nzOnCancel)="closeModal()" 

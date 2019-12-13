@@ -45,8 +45,28 @@ export class ProductListComponent implements OnInit {
   isSpinning = true
   tokenFromStorage = JSON.parse(localStorage.getItem('token'));
   token = this.tokenFromStorage ? this.tokenFromStorage : 'randomshittoken'; // your token
-  
-  
+
+
+  search(e): void {
+    if (e.key === 'Enter') {
+      if (e.target.value === '') {
+        this.loadPetData()
+      }
+      else {
+        const container = this.container;
+        container.clear();
+        axios({
+          method: 'GET',
+          url: `http://localhost:8080/api/petshop/pets/search/${e.target.value}?token=${this.token}`,
+        }).then((res) => {
+          res.data.map((v, k) => {
+            this.renderCard(v)
+          })
+        })
+      }
+    }
+  }
+
   loadPetData(): void {
     this.isSpinning = true
     const container = this.container;
@@ -55,7 +75,7 @@ export class ProductListComponent implements OnInit {
       method: 'GET',
       url: `http://localhost:8080/api/petshop/pets?token=${this.token}`,
     })
-      .then( (response: any) => {
+      .then((response: any) => {
         if (response.data.success === false) {
           this.notification.config({
             nzPlacement: 'bottomRight'
@@ -67,7 +87,7 @@ export class ProductListComponent implements OnInit {
             ""
           )
         } else {
-           response.data.map((v, k) => {
+          response.data.map((v, k) => {
             this.renderCard(v)
           })
           this.isSpinning = false
@@ -75,7 +95,7 @@ export class ProductListComponent implements OnInit {
       })
   }
 
-  goToDetail():void {
+  goToDetail(): void {
     this.linkTo.emit('detail')
   }
 
