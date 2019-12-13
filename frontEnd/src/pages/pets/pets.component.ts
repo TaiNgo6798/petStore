@@ -145,7 +145,10 @@ export class PetsComponent implements OnInit {
   }
 
 
-
+  ordersPage(): void{
+    this.router.navigateByUrl('/orders')
+  }
+  
   handleOk(): void {
     console.log('Button ok clicked!');
     this.isVisible = false;

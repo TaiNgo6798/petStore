@@ -5,11 +5,11 @@ import { NzNotificationService } from 'ng-zorro-antd/notification'
 import axios from 'axios'
 
 @Component({
-  selector: 'app-dasboard',
-  templateUrl: './dasboard.component.html',
-  styleUrls: ['./dasboard.component.less']
+  selector: 'app-orders',
+  templateUrl: './orders.component.html',
+  styleUrls: ['./orders.component.less']
 })
-export class DasboardComponent implements OnInit {
+export class OrdersComponent implements OnInit {
 
   constructor(
     private router: Router,
@@ -17,10 +17,45 @@ export class DasboardComponent implements OnInit {
     private notification: NzNotificationService,
   ) { }
 
-  currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : ''
+  currentUser = JSON.parse(localStorage.getItem('currentUser'))
   photoUrl = this.currentUser ? this.currentUser.photoUrl : ''
-  
+  tokenFromStorage = JSON.parse(localStorage.getItem('token'));
+  token = this.tokenFromStorage ? this.tokenFromStorage : 'randomshittoken'; // your token
   account
+  ordersData
+  isVisibleMiddle = false
+  modalData = {}
+  currentOrderID = ''
+  currentTotalPrice = 0
+    currentTime = ''
+
+  openModal(data):void{
+    this.isVisibleMiddle = true
+    this.modalData = data
+    this.currentOrderID = 'Order #' + data._id.substring(1,6)
+    this.currentTotalPrice = 0
+    data.listProduct.map((v) => {
+        this.currentTotalPrice += v.price
+    })
+    let date = new Date(data.date)
+    this.currentTime = date.toLocaleString()
+  }
+  closeModal():void{
+    this.isVisibleMiddle = false
+  }
+
+  approveHandler(id):void{
+    axios({
+      method: 'PUT',
+      url: `http://localhost:8080/api/petshop/orders/${id}?token=${this.token}`,
+      data:{
+        handle: true,
+        message: 'Your order is approved !'
+      }
+    }).then((res) => {
+      console.log(res);
+    })
+  }
 
   logoutClick(): void{
     localStorage.clear()
@@ -31,11 +66,6 @@ export class DasboardComponent implements OnInit {
   petsPage(): void{
     this.router.navigateByUrl('/pets')
   }
-
-  menuClick(e): void{
-    console.log(e)
-  }
-
   dashboardPage(): void{
     this.router.navigateByUrl('/dashboard')
   }
@@ -74,8 +104,23 @@ export class DasboardComponent implements OnInit {
    {
      cus.setAttribute("style", "Display: none")
    }
+
+    const orders = window.document.querySelector('.ordersMenu')
+   if(this.account.role.indexOf('ORDERS_SEE') === -1 && this.account.role.indexOf('admin') === -1)
+   {
+    orders.setAttribute("style", "Display: none")
+   }
   }
 
+  loadOrders():void{
+    axios({
+      method: 'GET',
+      url: `http://localhost:8080/api/petshop/orders?token=${this.token}`,
+    }).then((res) => {
+        console.log(res.data);
+        this.ordersData = res.data
+    })
+  }
 
   ngOnInit() {
     var token = JSON.parse(localStorage.getItem('token'));
@@ -113,12 +158,12 @@ export class DasboardComponent implements OnInit {
                 .then((response: any) => {
                   this.account = response.data
                   this.checkPermis()
+                  this.loadOrders()
                 })
             })
         }
       })
 
-      
-
   }
+
 }

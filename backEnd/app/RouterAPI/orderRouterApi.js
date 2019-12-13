@@ -81,7 +81,7 @@ apiRouterOrder
                       res.send(err);
                     } else {
                       res.json({
-                        message: "order updated!"
+                        message: "order updated!" 
                       });
                     }
                   });
@@ -94,6 +94,8 @@ apiRouterOrder
                     sendMail(account.email,order.message);
                 }
               })
+            } else {
+              res.send('Approved !')
             }
           }
         });

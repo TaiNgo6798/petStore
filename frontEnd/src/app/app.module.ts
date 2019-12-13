@@ -1,3 +1,9 @@
+import { OrdersComponent } from './../pages/orders/orders.component';
+
+import { CardShopComponent } from './../pages/selling/product-list/card-shop/card-shop.component';
+import { ProductListComponent } from './../pages/selling/product-list/product-list.component';
+import { DetailComponent } from './../pages/selling/detail/detail.component';
+import { CartComponent } from './../pages/selling/cart/cart.component';
 import { MenuComponent } from './../pages/menu/menu.component';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,6 +36,7 @@ import { CustomersComponent } from 'src/pages/customers/customers.component';
 import { ListcustomersComponent } from 'src/pages/listcustomers/listcustomers.component';
 import { AvatarComponent } from 'src/pages/avatar/avatar.component';
 import { PermissionsComponent } from 'src/pages/permissions/permissions.component';
+import { SellingComponent } from 'src/pages/selling/selling.component';
 
 
 
@@ -63,7 +70,13 @@ export function provideConfig() {
     ListcustomersComponent,
     AvatarComponent,
     PermissionsComponent,
-    MenuComponent
+    MenuComponent,
+    SellingComponent,
+    CartComponent,
+    DetailComponent,
+    ProductListComponent,
+    CardShopComponent,
+    OrdersComponent
   ],
   imports: [
     SocialLoginModule,
@@ -86,6 +99,6 @@ export function provideConfig() {
     }
   ],
   bootstrap: [AppComponent],
-  entryComponents: [CardComponent]
+  entryComponents: [CardComponent, CardShopComponent]
 })
 export class AppModule { }

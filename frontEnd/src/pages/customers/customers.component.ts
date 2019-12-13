@@ -41,6 +41,9 @@ export class CustomersComponent implements OnInit {
   customersPage(): void{
     this.router.navigateByUrl('/customers')
   }
+  ordersPage(): void{
+    this.router.navigateByUrl('/orders')
+  }
 
   permissionsPage(): void{
     this.router.navigateByUrl('/permissions')

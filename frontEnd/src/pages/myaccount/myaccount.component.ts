@@ -171,6 +171,9 @@ export class MyaccountComponent implements OnInit {
   myaccountPage(): void {
     this.router.navigateByUrl('/myaccount')
   }
+  ordersPage(): void{
+    this.router.navigateByUrl('/orders')
+  }
 
   checkPermis():void{
     const role = window.document.querySelector('.roleMenu')

@@ -93,6 +93,9 @@ export class PermissionsComponent implements OnInit {
     this.router.navigateByUrl('/pets')
 
   }
+  ordersPage(): void{
+    this.router.navigateByUrl('/orders')
+  }
 
   menuClick(e): void {
     console.log(e)
