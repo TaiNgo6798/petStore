@@ -1,10 +1,15 @@
 var express = require("express");
 var Order = require("./../model/order");
 var nodemailer = require("nodemailer");
-const SMS = require('node-sms-send')
 var Pet = require("./../model/pet");
 var Account = require("./../model/account");
+const Nexmo = require("nexmo");
 const apiRouterOrder = express.Router();
+
+const nexmo = new Nexmo({
+  apiKey: "d30d8204",
+  apiSecret: "SEm7ChamyASe8YBr"
+});
 
 apiRouterOrder
   .route("/orders")
@@ -88,10 +93,14 @@ apiRouterOrder
                 });
               });
               //gui thong bao
-              Account.findById(order.id_user).exec((err,account)=>{
-                  //gui mail
-                if(account.email){
-                    sendMail(account.email,order.message);
+              Account.findById(order.id_user).exec((err, account) => {
+                //gui mail
+                if (account.email) {
+                  sendMail(account.email, order.message);
+                }
+                //gui SMS
+                if (account.phone) {
+                  sendSMS(account.phone, order.message);
                 }
               })
             } else {
@@ -114,29 +123,49 @@ apiRouterOrder
     });
   });
 
-var sendMail = (email,message)=>{
-    var transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-          user: 'petshop16110052@gmail.com',
-          pass: 'datvu123'
-        }
-      });
-      
-      var mailOptions = {
-        from: 'petshop16110052@gmail.com',
-        to: email,
-        subject: 'Confirm Pet Purchase',
-        text: message
-      };
-      
-      transporter.sendMail(mailOptions, function(error, info){
-        if (error) {
-          console.log(error);
-        } else {
-          console.log('Email sent: ' + info.response);
-        }
-      }); 
-}
+var sendMail = (email, message) => {
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "petshop16110052@gmail.com",
+      pass: "datvu123"
+    }
+  });
+
+  var mailOptions = {
+    from: "petshop16110052@gmail.com",
+    to: email,
+    subject: "Confirm Pet Purchase",
+    text: message
+  };
+
+  transporter.sendMail(mailOptions, function(error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Email sent: " + info.response);
+    }
+  });
+};
+
+var sendSMS = (phone, message) => {
+  const from = "PetShop";
+  const to = phone;
+  const text = message;
+
+  nexmo.message.sendSms(from, to, text, (err, responseData) => {
+    if (err) {
+      console.log(err);
+    } else {
+      if (responseData.messages[0]["status"] === "0") {
+        console.log("Message sent successfully.");
+      } else {
+        console.log(
+          `Message failed with error: ${responseData.messages[0]["error-text"]}`
+        );
+      }
+    }
+  });
+};
 
 module.exports = apiRouterOrder;
